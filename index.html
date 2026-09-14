@@ -1,9 +1,11 @@
+```html
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>짤패드</title>
+
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=Inter:wght@400;500;600;700&display=swap');
 
@@ -19,7 +21,9 @@
     --video: #3fa7ff;
   }
 
-  * { box-sizing: border-box; }
+  * {
+    box-sizing: border-box;
+  }
 
   body {
     margin: 0;
@@ -30,7 +34,10 @@
     padding: 40px 24px 80px;
   }
 
-  .wrap { max-width: 880px; margin: 0 auto; }
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+  }
 
   header {
     display: flex;
@@ -59,15 +66,20 @@
     background: var(--surface);
     border: 1px solid var(--border);
     color: var(--text);
-    font-family: 'Inter', sans-serif;
     font-size: 14px;
     padding: 12px 16px;
     border-radius: 10px;
     width: 240px;
     outline: none;
   }
-  #search:focus { border-color: var(--text-dim); }
-  #search::placeholder { color: var(--text-dim); }
+
+  #search:focus {
+    border-color: var(--text-dim);
+  }
+
+  #search::placeholder {
+    color: var(--text-dim);
+  }
 
   .chips {
     display: flex;
@@ -85,14 +97,32 @@
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
-    transition: color .15s, border-color .15s;
   }
-  .chip:hover { color: var(--text); }
-  .chip.active { color: var(--bg); border-color: transparent; }
-  .chip[data-cat="all"].active { background: var(--text); }
-  .chip[data-cat="img"].active { background: var(--img); } 
-  .chip[data-cat="gif"].active { background: var(--gif); }
-  .chip[data-cat="video"].active { background: var(--video); }
+
+  .chip:hover {
+    color: var(--text);
+  }
+
+  .chip.active {
+    color: var(--bg);
+    border-color: transparent;
+  }
+
+  .chip[data-cat="all"].active {
+    background: var(--text);
+  }
+
+  .chip[data-cat="img"].active {
+    background: var(--img);
+  }
+
+  .chip[data-cat="gif"].active {
+    background: var(--gif);
+  }
+
+  .chip[data-cat="video"].active {
+    background: var(--video);
+  }
 
   .grid {
     display: grid;
@@ -109,18 +139,38 @@
     text-align: center;
     cursor: pointer;
     box-shadow: 4px 4px 0 rgba(0,0,0,0.35);
-    transition: background .12s;
   }
-  .pad:hover { background: var(--surface-hover); }
+
+  .pad:hover {
+    background: var(--surface-hover);
+  }
+
   .pad:active,
   .pad.fired {
     transform: translate(3px, 3px);
     box-shadow: 1px 1px 0 rgba(0,0,0,0.35);
   }
 
-  .pad .emoji { font-size: 30px; display: block; margin-bottom: 10px; }
-  .pad-img { width: 56px; height: 56px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
-  .pad .label { font-size: 13px; font-weight: 600; display: block; margin-bottom: 8px; }
+  .pad .emoji {
+    font-size: 30px;
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .pad-img {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+
+  .pad .label {
+    font-size: 13px;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 8px;
+  }
 
   .tag {
     display: inline-block;
@@ -130,11 +180,22 @@
     border-radius: 999px;
     color: var(--bg);
   }
-  .tag.img { background: var(--img); }
-  .tag.gif { background: var(--gif); }
-  .tag.video { background: var(--video); }
 
-  .pad.hidden { display: none; }
+  .tag.img {
+    background: var(--img);
+  }
+
+  .tag.gif {
+    background: var(--gif);
+  }
+
+  .tag.video {
+    background: var(--video);
+  }
+
+  .pad.hidden {
+    display: none;
+  }
 
   .recent-label {
     font-size: 13px;
@@ -163,7 +224,17 @@
     white-space: nowrap;
   }
 
-  .empty-note { color: var(--text-dim); font-size: 13px; }
+  .recent-thumb {
+    width: 24px;
+    height: 24px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+
+  .empty-note {
+    color: var(--text-dim);
+    font-size: 13px;
+  }
 
   #toast {
     position: fixed;
@@ -180,40 +251,49 @@
     transition: opacity .18s, transform .18s;
     pointer-events: none;
   }
+
   #toast.show {
     opacity: 1;
     transform: translate(-50%, 0);
   }
 </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <header>
-      <div>
-        <h1>짤패드</h1>
-        <p>채팅할 때 바로 꺼내 쓰는 나만의 짤 보드</p>
-      </div>
-      <input id="search" type="text" placeholder="짤 검색... (예: 당황, 댕댕이)">
-    </header>
+<div class="wrap">
 
-    <div class="chips" id="chips">
-      <div class="chip" data-cat="img">이미지</div>
-      <div class="chip" data-cat="gif">GIF</div>
-      <div class="chip" data-cat="video">영상</div>
+  <header>
+    <div>
+      <h1>짤패드</h1>
+      <p>채팅할 때 바로 꺼내 쓰는 나만의 짤 보드</p>
     </div>
+    <input id="search" type="text" placeholder="짤 검색... (예: 당황, 댕댕이)">
+  </header>
 
-    <div class="grid" id="grid"></div>
-
-    <div class="recent-label">최근 사용</div>
-    <div class="recent-row" id="recentRow">
-      <span class="empty-note">아직 사용한 짤이 없어요</span>
-    </div>
+  <div class="chips" id="chips">
+    <div class="chip active" data-cat="all">전체</div>
+    <div class="chip" data-cat="img">이미지</div>
+    <div class="chip" data-cat="gif">GIF</div>
+    <div class="chip" data-cat="video">영상</div>
   </div>
 
-  <div id="toast"></div>
+  <div class="grid" id="grid"></div>
+
+  <div class="recent-label">최근 사용</div>
+  <div class="recent-row" id="recentRow">
+    <span class="empty-note">아직 사용한 짤이 없어요</span>
+  </div>
+
+</div>
+
+<div id="toast"></div>
 
 <script>
-  const catName = { img: '이미지', gif: 'GIF', video: '영상' };
+  const catName = {
+    img: '이미지',
+    gif: 'GIF',
+    video: '영상'
+  };
 
   const pads = [
     { image: 'images/완벽히 이해했어.jpg', label: '완벽히 이해했어', cat: 'img' },
@@ -228,7 +308,7 @@
     { emoji: '🤐', label: '안물안궁', cat: 'gif' },
     { emoji: '📢', label: '팩폭', cat: 'video' },
     { emoji: '🐶', label: '댕댕이', cat: 'video' },
-    { emoji: '🐱', label: '냥이', cat: 'video' },
+    { emoji: '🐱', label: '냥이', cat: 'video' }
   ];
 
   const grid = document.getElementById('grid');
@@ -243,31 +323,55 @@
   function render() {
     const q = searchInput.value.trim().toLowerCase();
     grid.innerHTML = '';
-    pads.forEach((p, i) => {
+
+    pads.forEach((p) => {
       const matchCat = activeCat === 'all' || p.cat === activeCat;
       const matchSearch = !q || p.label.toLowerCase().includes(q);
+
       const el = document.createElement('div');
       el.className = 'pad' + (matchCat && matchSearch ? '' : ' hidden');
-      const visual = p.image ? `<img class="pad-img" src="${p.image}" alt="${p.label}">` : `<span class="emoji">${p.emoji}</span>`;
+
+      const visual = p.image
+        ? `<img class="pad-img" src="${p.image}" alt="${p.label}">`
+        : `<span class="emoji">${p.emoji}</span>`;
+
       el.innerHTML = `
         ${visual}
         <span class="label">${p.label}</span>
         <span class="tag ${p.cat}">${catName[p.cat]}</span>
       `;
+
       el.addEventListener('click', () => fire(p, el));
       grid.appendChild(el);
     });
   }
 
-  function fire(p, el) {
+  async function fire(p, el) {
     el.classList.add('fired');
     setTimeout(() => el.classList.remove('fired'), 150);
 
-    try { navigator.clipboard.writeText(p.label); } catch (e) {}
+    try {
+      if (p.image) {
+        const response = await fetch(p.image);
+        if (!response.ok) throw new Error('이미지 불러오기 실패');
 
-    toast.textContent = `'${p.label}' 복사됨 → 채팅창에 붙여넣기`;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 1400);
+        const blob = await response.blob();
+
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            [blob.type]: blob
+          })
+        ]);
+
+        showToast(`'${p.label}' 이미지 복사됨 → Ctrl+V`);
+      } else {
+        await navigator.clipboard.writeText(p.emoji);
+        showToast(`'${p.label}' 복사됨`);
+      }
+    } catch (e) {
+      console.error(e);
+      showToast('복사 실패 😭');
+    }
 
     recent = recent.filter(r => r.label !== p.label);
     recent.unshift(p);
@@ -275,14 +379,33 @@
     renderRecent();
   }
 
+  function showToast(message) {
+    toast.textContent = message;
+    toast.classList.add('show');
+
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 1400);
+  }
+
   function renderRecent() {
     if (recent.length === 0) {
-      recentRow.innerHTML = '<span class="empty-note">아직 사용한 짤이 없어요</span>';
+      recentRow.innerHTML =
+        '<span class="empty-note">아직 사용한 짤이 없어요</span>';
       return;
     }
-    recentRow.innerHTML = recent.map(p =>
-      `<div class="recent-item">${p.emoji} ${p.label}</div>`
-    ).join('');
+
+    recentRow.innerHTML = recent.map(p => {
+      const visual = p.image
+        ? `<img class="recent-thumb" src="${p.image}" alt="${p.label}">`
+        : p.emoji;
+
+      return `
+        <div class="recent-item">
+          ${visual} ${p.label}
+        </div>
+      `;
+    }).join('');
   }
 
   chips.forEach(chip => {
@@ -298,5 +421,7 @@
 
   render();
 </script>
+
 </body>
 </html>
+```
