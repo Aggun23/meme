@@ -119,6 +119,7 @@
   }
 
   .pad .emoji { font-size: 30px; display: block; margin-bottom: 10px; }
+  .pad-img { width: 56px; height: 56px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
   .pad .label { font-size: 13px; font-weight: 600; display: block; margin-bottom: 8px; }
 
   .tag {
@@ -246,8 +247,9 @@
       const matchSearch = !q || p.label.toLowerCase().includes(q);
       const el = document.createElement('div');
       el.className = 'pad' + (matchCat && matchSearch ? '' : ' hidden');
+      const visual = p.image ? `<img class="pad-img" src="${p.image}" alt="${p.label}">` : `<span class="emoji">${p.emoji}</span>`;
       el.innerHTML = `
-        <span class="emoji">${p.emoji}</span>
+        ${visual}
         <span class="label">${p.label}</span>
         <span class="tag ${p.cat}">${catName[p.cat]}</span>
       `;
