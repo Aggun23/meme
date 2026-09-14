@@ -14,10 +14,9 @@
     --border: #2c333d;
     --text: #f2f1ed;
     --text-dim: #8b93a1;
-    --reaction: #ff5470;
-    --emotion: #9d7bff;
-    --phrase: #c6ff3d;
-    --animal: #3fa7ff;
+    --img: #ff5470;
+    --gif: #c6ff3d;
+    --video: #3fa7ff;
   }
 
   * { box-sizing: border-box; }
@@ -91,10 +90,9 @@
   .chip:hover { color: var(--text); }
   .chip.active { color: var(--bg); border-color: transparent; }
   .chip[data-cat="all"].active { background: var(--text); }
-  .chip[data-cat="reaction"].active { background: var(--reaction); }
-  .chip[data-cat="emotion"].active { background: var(--emotion); }
-  .chip[data-cat="phrase"].active { background: var(--phrase); }
-  .chip[data-cat="animal"].active { background: var(--animal); }
+  .chip[data-cat="img"].active { background: var(--img); } 
+  .chip[data-cat="gif"].active { background: var(--gif); }
+  .chip[data-cat="video"].active { background: var(--video); }
 
   .grid {
     display: grid;
@@ -131,10 +129,9 @@
     border-radius: 999px;
     color: var(--bg);
   }
-  .tag.reaction { background: var(--reaction); }
-  .tag.emotion { background: var(--emotion); }
-  .tag.phrase { background: var(--phrase); }
-  .tag.animal { background: var(--animal); }
+  .tag.img { background: var(--img); }
+  .tag.gif { background: var(--gif); }
+  .tag.video { background: var(--video); }
 
   .pad.hidden { display: none; }
 
@@ -199,11 +196,9 @@
     </header>
 
     <div class="chips" id="chips">
-      <div class="chip active" data-cat="all">전체</div>
-      <div class="chip" data-cat="reaction">리액션</div>
-      <div class="chip" data-cat="emotion">감정</div>
-      <div class="chip" data-cat="phrase">유행어</div>
-      <div class="chip" data-cat="animal">동물</div>
+      <div class="chip" data-cat="img">이미지</div>
+      <div class="chip" data-cat="gif">GIF</div>
+      <div class="chip" data-cat="video">영상</div>
     </div>
 
     <div class="grid" id="grid"></div>
@@ -217,21 +212,21 @@
   <div id="toast"></div>
 
 <script>
-  const catName = { reaction: '리액션', emotion: '감정', phrase: '유행어', animal: '동물' };
+  const catName = { img: '이미지', gif: 'GIF', video: '영상' };
 
   const pads = [
-    { emoji: '😂', label: '빵터짐', cat: 'reaction' },
-    { emoji: '😳', label: '당황', cat: 'reaction' },
-    { emoji: '🙄', label: '어이없음', cat: 'reaction' },
-    { emoji: '😱', label: '소름', cat: 'reaction' },
-    { emoji: '😤', label: '화남', cat: 'emotion' },
-    { emoji: '😶', label: '현타', cat: 'emotion' },
-    { emoji: '🥹', label: '감동', cat: 'emotion' },
-    { emoji: '😑', label: '귀찮음', cat: 'emotion' },
-    { emoji: '🤐', label: '안물안궁', cat: 'phrase' },
-    { emoji: '📢', label: '팩폭', cat: 'phrase' },
-    { emoji: '🐶', label: '댕댕이', cat: 'animal' },
-    { emoji: '🐱', label: '냥이', cat: 'animal' },
+    { emoji: '😂', label: '빵터짐', cat: 'img' },
+    { emoji: '😳', label: '당황', cat: 'img' },
+    { emoji: '🙄', label: '어이없음', cat: 'img' },
+    { emoji: '😱', label: '소름', cat: 'img' },
+    { emoji: '😤', label: '화남', cat: 'gif' },
+    { emoji: '😶', label: '현타', cat: 'gif' },
+    { emoji: '🥹', label: '감동', cat: 'gif' },
+    { emoji: '😑', label: '귀찮음', cat: 'gif' },
+    { emoji: '🤐', label: '안물안궁', cat: 'gif' },
+    { emoji: '📢', label: '팩폭', cat: 'video' },
+    { emoji: '🐶', label: '댕댕이', cat: 'video' },
+    { emoji: '🐱', label: '냥이', cat: 'video' },
   ];
 
   const grid = document.getElementById('grid');
