@@ -344,30 +344,36 @@
   let recent = [];
 
   function render() {
-    const q = searchInput.value.trim().toLowerCase();
-    grid.innerHTML = '';
+  const q = searchInput.value.trim().toLowerCase();
 
-    pads.forEach((p) => {
+  const sortedPads = [...pads]
+    .filter(p => {
       const matchCat = activeCat === 'all' || p.cat === activeCat;
       const matchSearch = !q || p.label.toLowerCase().includes(q);
+      return matchCat && matchSearch;
+    })
+    .sort((a, b) => a.label.localeCompare(b.label, 'ko'));
 
-      const el = document.createElement('div');
-      el.className = 'pad' + (matchCat && matchSearch ? '' : ' hidden');
+  grid.innerHTML = '';
 
-      const visual = p.image
-        ? `<img class="pad-img" src="${p.image}" alt="${p.label}">`
-        : `<span class="emoji">${p.emoji}</span>`;
+  sortedPads.forEach(p => {
+    const el = document.createElement('div');
+    el.className = 'pad';
 
-      el.innerHTML = `
-        ${visual}
-        <span class="label">${p.label}</span>
-        <span class="tag ${p.cat}">${catName[p.cat]}</span>
-      `;
+    const visual = p.image
+      ? `<img class="pad-img" src="${p.image}" alt="${p.label}">`
+      : `<span class="emoji">${p.emoji}</span>`;
 
-      el.addEventListener('click', () => fire(p, el));
-      grid.appendChild(el);
-    });
-  }
+    el.innerHTML = `
+      ${visual}
+      <span class="label">${p.label}</span>
+      <span class="tag ${p.cat}">${catName[p.cat]}</span>
+    `;
+
+    el.addEventListener('click', () => fire(p, el));
+    grid.appendChild(el);
+  });
+}
 
   async function fire(p, el) {
   el.classList.add('fired');
