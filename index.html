@@ -165,11 +165,14 @@
   }
 
   .pad-img {
-    width: 56px;
-    height: 56px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 10px;
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
   }
 
   .pad .label {
@@ -352,49 +355,51 @@
   let recent = [];
 
   function render() {
-  const q = searchInput.value.trim().toLowerCase();
-  grid.innerHTML = '';
+    const q = searchInput.value.trim().toLowerCase();
+    grid.innerHTML = '';
 
-  const categories = activeCat === 'all'
-    ? ['img', 'gif', 'video']
-    : [activeCat];
+    const categories = activeCat === 'all'
+      ? ['img', 'gif', 'video']
+      : [activeCat];
 
-  categories.forEach(cat => {
-    const list = pads
-      .filter(p =>
-        p.cat === cat &&
-        (!q || p.label.toLowerCase().includes(q))
-      )
-      .sort((a, b) => a.label.localeCompare(b.label, 'ko'));
+    categories.forEach(cat => {
+      const list = pads
+        .filter(p =>
+          p.cat === cat &&
+          (!q || p.label.toLowerCase().includes(q))
+        )
+        .sort((a, b) => a.label.localeCompare(b.label, 'ko'));
 
-    if (list.length === 0) return;
+      if (list.length === 0) return;
 
-    if (activeCat === 'all') {
-      const title = document.createElement('div');
-      title.className = 'category-title';
-      title.textContent = catName[cat];
-      grid.appendChild(title);
-    }
+      if (activeCat === 'all') {
+        const title = document.createElement('div');
+        title.className = 'category-title';
+        title.textContent = catName[cat];
+        grid.appendChild(title);
+      }
 
-    list.forEach(p => {
-      const el = document.createElement('div');
-      el.className = 'pad';
+      list.forEach(p => {
+        const el = document.createElement('div');
+        el.className = 'pad';
 
-      const visual = p.image
-        ? `<img class="pad-img" src="${p.image}" alt="${p.label}">`
-        : `<span class="emoji">${p.emoji}</span>`;
+        const visual = p.image
+          ? `<img class="pad-img" src="${p.image}" alt="${p.label}">`
+          : p.emoji
+          ? `<img class="pad-img" src="${p.image}" alt="${p.label}">`
+          : `<span class="emoji">${p.emoji}</span>`;
 
-      el.innerHTML = `
-        ${visual}
-        <span class="label">${p.label}</span>
-        <span class="tag ${p.cat}">${catName[p.cat]}</span>
-      `;
+        el.innerHTML = `
+          ${visual}
+          <span class="label">${p.label}</span>
+          <span class="tag ${p.cat}">${catName[p.cat]}</span>
+        `;
 
-      el.addEventListener('click', () => fire(p, el));
-      grid.appendChild(el);
+        el.addEventListener('click', () => fire(p, el));
+        grid.appendChild(el);
+      });
     });
-  });
-}
+  }
 
   async function fire(p, el) {
   el.classList.add('fired');
