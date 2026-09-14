@@ -8,6 +8,14 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=Inter:wght@400;500;600;700&display=swap');
 
+  .category-title {
+    grid-column: 1 / -1;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-dim);
+    margin-top: 10px;
+  }
+
   :root {
     --bg: #14171c;
     --surface: #1d2229;
@@ -345,33 +353,46 @@
 
   function render() {
   const q = searchInput.value.trim().toLowerCase();
-
-  const sortedPads = [...pads]
-    .filter(p => {
-      const matchCat = activeCat === 'all' || p.cat === activeCat;
-      const matchSearch = !q || p.label.toLowerCase().includes(q);
-      return matchCat && matchSearch;
-    })
-    .sort((a, b) => a.label.localeCompare(b.label, 'ko'));
-
   grid.innerHTML = '';
 
-  sortedPads.forEach(p => {
-    const el = document.createElement('div');
-    el.className = 'pad';
+  const categories = activeCat === 'all'
+    ? ['img', 'gif', 'video']
+    : [activeCat];
 
-    const visual = p.image
-      ? `<img class="pad-img" src="${p.image}" alt="${p.label}">`
-      : `<span class="emoji">${p.emoji}</span>`;
+  categories.forEach(cat => {
+    const list = pads
+      .filter(p =>
+        p.cat === cat &&
+        (!q || p.label.toLowerCase().includes(q))
+      )
+      .sort((a, b) => a.label.localeCompare(b.label, 'ko'));
 
-    el.innerHTML = `
-      ${visual}
-      <span class="label">${p.label}</span>
-      <span class="tag ${p.cat}">${catName[p.cat]}</span>
-    `;
+    if (list.length === 0) return;
 
-    el.addEventListener('click', () => fire(p, el));
-    grid.appendChild(el);
+    if (activeCat === 'all') {
+      const title = document.createElement('div');
+      title.className = 'category-title';
+      title.textContent = catName[cat];
+      grid.appendChild(title);
+    }
+
+    list.forEach(p => {
+      const el = document.createElement('div');
+      el.className = 'pad';
+
+      const visual = p.image
+        ? `<img class="pad-img" src="${p.image}" alt="${p.label}">`
+        : `<span class="emoji">${p.emoji}</span>`;
+
+      el.innerHTML = `
+        ${visual}
+        <span class="label">${p.label}</span>
+        <span class="tag ${p.cat}">${catName[p.cat]}</span>
+      `;
+
+      el.addEventListener('click', () => fire(p, el));
+      grid.appendChild(el);
+    });
   });
 }
 
