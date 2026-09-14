@@ -383,9 +383,9 @@
         const el = document.createElement('div');
         el.className = 'pad';
 
-        const visual = p.image
-          ? `<img class="pad-img" src="${p.image}" alt="${p.label}">`
-          : p.emoji
+        const visual = p.video
+          ? `<video class="pad-img" src="${p.video}" muted loop playsinline></video>`
+          : p.image
           ? `<img class="pad-img" src="${p.image}" alt="${p.label}">`
           : `<span class="emoji">${p.emoji}</span>`;
 
@@ -396,45 +396,65 @@
         `;
 
         el.addEventListener('click', () => fire(p, el));
+
+        if (p.video) {
+          const video = el.querySelector('video');
+
+          el.addEventListener('mouseenter', () => {
+            video.currentTime = 0;
+            video.play();
+          });
+
+          el.addEventListener('mouseleave', () => {
+            video.pause();
+            video.currentTime = 0;
+          });
+        }
         grid.appendChild(el);
       });
     });
   }
 
   async function fire(p, el) {
-  el.classList.add('fired');
-  setTimeout(() => el.classList.remove('fired'), 150);
+    el.classList.add('fired');
+    setTimeout(() => el.classList.remove('fired'), 150);
 
-  try {
-    if (p.image) {
-      const response = await fetch(p.image);
-      const blob = await response.blob();
+    try {
+      if (p.video) {
+        const a = document.createElement('a');
+        a.href = p.video;
+        a.download = p.video.split('/').pop();
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
 
-      const imageBlob = new Blob([blob], {
-        type: 'image/png'
-      });
+        showToast(`'${p.label}' 다운로드됨`);
+      } else if (p.image) {
+        const response = await fetch(p.image);
+        const blob = await response.blob();
 
-      await navigator.clipboard.write([
-        new ClipboardItem({
-          'image/png': imageBlob
-        })
-      ]);
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            [blob.type]: blob
+          })
+        ]);
 
-      showToast(`'${p.label}' 이미지 복사됨 → Ctrl+V`);
-    } else {
-      await navigator.clipboard.writeText(p.emoji);
-      showToast(`'${p.label}' 복사됨`);
+        showToast(`'${p.label}' 이미지 복사됨 → Ctrl+V`);
+      } else {
+        await navigator.clipboard.writeText(p.emoji);
+        showToast(`'${p.label}' 복사됨`);
+      }
+    } catch (e) {
+      console.error(e);
+      showToast('실패 😭');
     }
-  } catch (e) {
-    console.error(e);
-    showToast('복사 실패 😭');
-  }
 
-  recent = recent.filter(r => r.label !== p.label);
-  recent.unshift(p);
-  recent = recent.slice(0, 6);
-  renderRecent();
-}
+    recent = recent.filter(r => r.label !== p.label);
+    recent.unshift(p);
+    recent = recent.slice(0, 6);
+    renderRecent();
+  }
+  
   function showToast(message) {
     toast.textContent = message;
     toast.classList.add('show');
