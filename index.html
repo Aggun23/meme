@@ -346,38 +346,39 @@
   }
 
   async function fire(p, el) {
-    el.classList.add('fired');
-    setTimeout(() => el.classList.remove('fired'), 150);
+  el.classList.add('fired');
+  setTimeout(() => el.classList.remove('fired'), 150);
 
-    try {
-      if (p.image) {
-        const response = await fetch(p.image);
-        if (!response.ok) throw new Error('이미지 불러오기 실패');
+  try {
+    if (p.image) {
+      const response = await fetch(p.image);
+      const blob = await response.blob();
 
-        const blob = await response.blob();
+      const imageBlob = new Blob([blob], {
+        type: 'image/png'
+      });
 
-        await navigator.clipboard.write([
-          new ClipboardItem({
-            [blob.type]: blob
-          })
-        ]);
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          'image/png': imageBlob
+        })
+      ]);
 
-        showToast(`'${p.label}' 이미지 복사됨 → Ctrl+V`);
-      } else {
-        await navigator.clipboard.writeText(p.emoji);
-        showToast(`'${p.label}' 복사됨`);
-      }
-    } catch (e) {
-      console.error(e);
-      showToast('복사 실패 😭');
+      showToast(`'${p.label}' 이미지 복사됨 → Ctrl+V`);
+    } else {
+      await navigator.clipboard.writeText(p.emoji);
+      showToast(`'${p.label}' 복사됨`);
     }
-
-    recent = recent.filter(r => r.label !== p.label);
-    recent.unshift(p);
-    recent = recent.slice(0, 6);
-    renderRecent();
+  } catch (e) {
+    console.error(e);
+    showToast('복사 실패 😭');
   }
 
+  recent = recent.filter(r => r.label !== p.label);
+  recent.unshift(p);
+  recent = recent.slice(0, 6);
+  renderRecent();
+}
   function showToast(message) {
     toast.textContent = message;
     toast.classList.add('show');
