@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>짤패드</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg: #14171c;
+    --surface: #1d2229;
+    --surface-hover: #262c35;
+    --border: #2c333d;
+    --text: #f2f1ed;
+    --text-dim: #8b93a1;
+    --reaction: #ff5470;
+    --emotion: #9d7bff;
+    --phrase: #c6ff3d;
+    --animal: #3fa7ff;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    padding: 40px 24px 80px;
+  }
+
+  .wrap { max-width: 880px; margin: 0 auto; }
+
+  header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+
+  h1 {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 800;
+    font-size: 40px;
+    letter-spacing: -0.02em;
+    margin: 0 0 6px;
+  }
+
+  header p {
+    margin: 0;
+    color: var(--text-dim);
+    font-size: 14px;
+  }
+
+  #search {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    width: 240px;
+    outline: none;
+  }
+  #search:focus { border-color: var(--text-dim); }
+  #search::placeholder { color: var(--text-dim); }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .chip {
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-dim);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color .15s, border-color .15s;
+  }
+  .chip:hover { color: var(--text); }
+  .chip.active { color: var(--bg); border-color: transparent; }
+  .chip[data-cat="all"].active { background: var(--text); }
+  .chip[data-cat="reaction"].active { background: var(--reaction); }
+  .chip[data-cat="emotion"].active { background: var(--emotion); }
+  .chip[data-cat="phrase"].active { background: var(--phrase); }
+  .chip[data-cat="animal"].active { background: var(--animal); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 14px;
+    margin-bottom: 40px;
+  }
+
+  .pad {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 14px 14px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.35);
+    transition: background .12s;
+  }
+  .pad:hover { background: var(--surface-hover); }
+  .pad:active,
+  .pad.fired {
+    transform: translate(3px, 3px);
+    box-shadow: 1px 1px 0 rgba(0,0,0,0.35);
+  }
+
+  .pad .emoji { font-size: 30px; display: block; margin-bottom: 10px; }
+  .pad .label { font-size: 13px; font-weight: 600; display: block; margin-bottom: 8px; }
+
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 999px;
+    color: var(--bg);
+  }
+  .tag.reaction { background: var(--reaction); }
+  .tag.emotion { background: var(--emotion); }
+  .tag.phrase { background: var(--phrase); }
+  .tag.animal { background: var(--animal); }
+
+  .pad.hidden { display: none; }
+
+  .recent-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+
+  .recent-row {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .recent-item {
+    flex: 0 0 auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+
+  .empty-note { color: var(--text-dim); font-size: 13px; }
+
+  #toast {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    transform: translate(-50%, 20px);
+    background: var(--text);
+    color: var(--bg);
+    font-weight: 600;
+    font-size: 14px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    opacity: 0;
+    transition: opacity .18s, transform .18s;
+    pointer-events: none;
+  }
+  #toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>짤패드</h1>
+        <p>채팅할 때 바로 꺼내 쓰는 나만의 짤 보드</p>
+      </div>
+      <input id="search" type="text" placeholder="짤 검색... (예: 당황, 댕댕이)">
+    </header>
+
+    <div class="chips" id="chips">
+      <div class="chip active" data-cat="all">전체</div>
+      <div class="chip" data-cat="reaction">리액션</div>
+      <div class="chip" data-cat="emotion">감정</div>
+      <div class="chip" data-cat="phrase">유행어</div>
+      <div class="chip" data-cat="animal">동물</div>
+    </div>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="recent-label">최근 사용</div>
+    <div class="recent-row" id="recentRow">
+      <span class="empty-note">아직 사용한 짤이 없어요</span>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+<script>
+  const catName = { reaction: '리액션', emotion: '감정', phrase: '유행어', animal: '동물' };
+
+  const pads = [
+    { emoji: '😂', label: '빵터짐', cat: 'reaction' },
+    { emoji: '😳', label: '당황', cat: 'reaction' },
+    { emoji: '🙄', label: '어이없음', cat: 'reaction' },
+    { emoji: '😱', label: '소름', cat: 'reaction' },
+    { emoji: '😤', label: '화남', cat: 'emotion' },
+    { emoji: '😶', label: '현타', cat: 'emotion' },
+    { emoji: '🥹', label: '감동', cat: 'emotion' },
+    { emoji: '😑', label: '귀찮음', cat: 'emotion' },
+    { emoji: '🤐', label: '안물안궁', cat: 'phrase' },
+    { emoji: '📢', label: '팩폭', cat: 'phrase' },
+    { emoji: '🐶', label: '댕댕이', cat: 'animal' },
+    { emoji: '🐱', label: '냥이', cat: 'animal' },
+  ];
+
+  const grid = document.getElementById('grid');
+  const recentRow = document.getElementById('recentRow');
+  const toast = document.getElementById('toast');
+  const searchInput = document.getElementById('search');
+  const chips = document.querySelectorAll('.chip');
+
+  let activeCat = 'all';
+  let recent = [];
+
+  function render() {
+    const q = searchInput.value.trim().toLowerCase();
+    grid.innerHTML = '';
+    pads.forEach((p, i) => {
+      const matchCat = activeCat === 'all' || p.cat === activeCat;
+      const matchSearch = !q || p.label.toLowerCase().includes(q);
+      const el = document.createElement('div');
+      el.className = 'pad' + (matchCat && matchSearch ? '' : ' hidden');
+      el.innerHTML = `
+        <span class="emoji">${p.emoji}</span>
+        <span class="label">${p.label}</span>
+        <span class="tag ${p.cat}">${catName[p.cat]}</span>
+      `;
+      el.addEventListener('click', () => fire(p, el));
+      grid.appendChild(el);
+    });
+  }
+
+  function fire(p, el) {
+    el.classList.add('fired');
+    setTimeout(() => el.classList.remove('fired'), 150);
+
+    try { navigator.clipboard.writeText(p.label); } catch (e) {}
+
+    toast.textContent = `'${p.label}' 복사됨 → 채팅창에 붙여넣기`;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 1400);
+
+    recent = recent.filter(r => r.label !== p.label);
+    recent.unshift(p);
+    recent = recent.slice(0, 6);
+    renderRecent();
+  }
+
+  function renderRecent() {
+    if (recent.length === 0) {
+      recentRow.innerHTML = '<span class="empty-note">아직 사용한 짤이 없어요</span>';
+      return;
+    }
+    recentRow.innerHTML = recent.map(p =>
+      `<div class="recent-item">${p.emoji} ${p.label}</div>`
+    ).join('');
+  }
+
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      chips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      activeCat = chip.dataset.cat;
+      render();
+    });
+  });
+
+  searchInput.addEventListener('input', render);
+
+  render();
+</script>
+</body>
+</html>
