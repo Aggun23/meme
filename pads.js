@@ -68,6 +68,8 @@ const catName = {
     { image: 'images/헤.jpg', label: '헤', cat: 'img' },
     { image: 'images/황홀!.jpg', label: '황홀!', cat: 'img' },
     { image: 'images/가챠 실패(화사).gif', label: '가챠 실패', cat: 'gif' },
+    { image: 'images/콘센트에팡팡팡.gif', label: '콘센트에팡팡팡', cat: 'gif' },
+    { image: 'images/이제는 더이상 물러날 곳이 없다.jpg', label: '이제는 더이상', cat: 'img' },
     { image: 'images/곰문곰문곰문.jpg', label: '곰문곰문곰문', cat: 'img' },
     { image: 'images/공부 보이콧.jpg', label: '공부 보이콧', cat: 'img' },
     { image: 'images/국가전체주의적인종차별주의.jpg', label: '줄여서 NTR', cat: 'img' },
