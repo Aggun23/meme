@@ -11,7 +11,7 @@ const catName = {
     { image: 'images/시각을 포기한다.png', label: '시각을 포기한다', cat: 'img' },
     { video: 'images/쌀숭이 템플런.mp4', label: '쌀숭이 템플런', cat: 'video' },
     { image: 'images/여름나기.png', label: '여름나기', cat: 'img' },
-    { image: 'images/터져서 없어짐.jpg', label: '터져서 없어짐', cat: 'img' },
+    { image: 'images/터져서 없어짐.png', label: '터져서 없어짐', cat: 'img' },
     { image: 'images/테이잉.webp', label: '테이잉', cat: 'img' },
     { image: 'images/흠맹밍.webp', label: '흠맹밍', cat: 'img' },
     { image: 'images/공공의적.webp', label: '공공의 적', cat: 'img' },
