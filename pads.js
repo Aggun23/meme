@@ -103,5 +103,6 @@ const catName = {
     { image: 'images/그럼 꺼져.jpg', label: '그럼 꺼져', cat: 'img' },
     { image: 'images/마음속에 매장.jpg', label: '마음속에 매장', cat: 'img' },
     { image: 'images/진조가 그럴수도 있지.png', label: '진조가 그럴수도 있지', cat: 'img' },
+    { image: 'images/날 죽여라.jpg', label: '날 죽여라', cat: 'img' },
     { image: 'images/PC정상화킥.gif', label: 'PC정상화킥', cat: 'gif' }
   ];
