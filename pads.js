@@ -104,5 +104,7 @@ const catName = {
     { image: 'images/마음속에 매장.jpg', label: '마음속에 매장', cat: 'img' },
     { image: 'images/진조가 그럴수도 있지.png', label: '진조가 그럴수도 있지', cat: 'img' },
     { image: 'images/날 죽여라.jpg', label: '날 죽여라', cat: 'img' },
-    { image: 'images/PC정상화킥.gif', label: 'PC정상화킥', cat: 'gif' }
+    { image: 'images/PC정상화킥.gif', label: 'PC정상화킥', cat: 'gif' },
+    { image: 'images/섭종.png', label: '섭종', cat: 'img' },
+    { image: 'images/내면의 괴렘.gif', label: '내면의 괴렘', cat: 'gif' }
   ];
