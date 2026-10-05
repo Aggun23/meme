@@ -139,7 +139,7 @@ const catName = {
     { image: 'images/지하실.webp', label: '밑바닥에도 바닥이', cat: 'img' },
     { image: 'images/최선을 다한다.jpg', label: '최선을 다한다', cat: 'img' },
     { image: 'images/카멜 따봉.jpg', label: '카멜 따봉', cat: 'img' },
-    { image: 'images/펠린소맨.mp4', label: '체인소 펠리카', cat: 'video' },
+    { video: 'images/펠린소맨.mp4', label: '체인소 펠리카', cat: 'video' },
     { image: 'images/포기하는 순간이.jpg', label: '포기하는 순간이 시합종료', cat: 'img' },
     { image: 'images/한가위 괴렘.png', label: '한가위 괴렘', cat: 'img' },
     { image: 'images/한가위 도황.jpg', label: '한가위 도황', cat: 'img' },
