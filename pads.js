@@ -135,6 +135,7 @@ const catName = {
     { image: 'images/이리로 들어오도록.jpg', label: '이리로 들어오도록', cat: 'img' },
     { image: 'images/이새끼 웃는데요.jpg', label: '이새끼 웃는데요?', cat: 'img' },
     { image: 'images/이터널리턴지금바로다운로드.png', label: '이터리지금바로다운', cat: 'img' },
+    { image: 'images/죽을께.png', label: '죽을께', cat: 'img' },
     { image: 'images/죽음으로 맛있는데.jpg', label: '죽음으로 맛있/없는데', cat: 'img' },
     { image: 'images/지하실.webp', label: '밑바닥에도 바닥이', cat: 'img' },
     { image: 'images/최선을 다한다.jpg', label: '최선을 다한다', cat: 'img' },
