@@ -146,5 +146,8 @@ const catName = {
     { image: 'images/한가위 도황.jpg', label: '한가위 도황', cat: 'img' },
     { image: 'images/회색내복 블래스터1.jpg', label: '신창섭 블래스터1', cat: 'img' },
     { image: 'images/회색내복 블래스터2.jpg', label: '신창섭 블래스터2', cat: 'img' },
-    { image: 'images/내면의 괴렘.gif', label: '내면의 괴렘', cat: 'gif' }
+    { image: 'images/내면의 괴렘.gif', label: '내면의 괴렘', cat: 'gif' },
+
+    { image: 'images/빤.jpg', label: '빤-', cat: 'img' },
+    { image: 'images/나쁜아이.jpg', label: '나쁜아이는 드럼통에', cat: 'img' },
   ];
