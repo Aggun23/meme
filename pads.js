@@ -148,6 +148,6 @@ const catName = {
     { image: 'images/회색내복 블래스터2.jpg', label: '신창섭 블래스터2', cat: 'img' },
     { image: 'images/내면의 괴렘.gif', label: '내면의 괴렘', cat: 'gif' },
 
-    { image: 'images/빤.jpg', label: '빤-', cat: 'img' },
-    { image: 'images/나쁜아이.jpg', label: '나쁜아이는 드럼통에', cat: 'img' },
+    { image: 'images/빤.png', label: '빤-', cat: 'img' },
+    { image: 'images/나쁜아이.png', label: '나쁜아이는 드럼통에', cat: 'img' },
   ];
