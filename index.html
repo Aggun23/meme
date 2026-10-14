@@ -30,6 +30,7 @@
     --tag-emo: #ffb142;
     --tag-meme: #b36bff;
     --tag-jjal: #2bcbba;
+    --tag-pol: #fed330;
   }
 
   * {
@@ -167,12 +168,16 @@
     background: var(--tag-emo);
   }
 
-  .chip[data-tag="밈 사진"].active {
+  .chip[data-tag="짤"].active {
+    background: var(--tag-jjal);
+  }
+
+  .chip[data-tag="MEME"].active {
     background: var(--tag-meme);
   }
 
-  .chip[data-tag="짤"].active {
-    background: var(--tag-jjal);
+  .chip[data-tag="정치인"].active {
+    background: var(--tag-pol);
   }
 
   .grid {
@@ -275,14 +280,19 @@
     color: var(--tag-emo);
   }
 
-  .tag.sub-tag[data-t="밈 사진"] {
+  .tag.sub-tag[data-t="짤"] {
+    border-color: rgba(43, 203, 186, 0.45);
+    color: var(--tag-jjal);
+  }
+
+  .tag.sub-tag[data-t="MEME"] {
     border-color: rgba(179, 107, 255, 0.45);
     color: var(--tag-meme);
   }
 
-  .tag.sub-tag[data-t="짤"] {
-    border-color: rgba(43, 203, 186, 0.45);
-    color: var(--tag-jjal);
+  .tag.sub-tag[data-t="정치인"] {
+    border-color: rgba(254, 211, 48, 0.45);
+    color: var(--tag-pol);
   }
 
   .pad.hidden {
@@ -379,8 +389,9 @@
       <span class="row-label">분류</span>
       <div class="chip active" data-tag="all">전체 <span class="count" id="cnt-tag-all"></span></div>
       <div class="chip" data-tag="이모티콘">#이모티콘 <span class="count" id="cnt-tag-이모티콘"></span></div>
-      <div class="chip" data-tag="밈 사진">#밈 사진 <span class="count" id="cnt-tag-밈 사진"></span></div>
       <div class="chip" data-tag="짤">#짤 <span class="count" id="cnt-tag-짤"></span></div>
+      <div class="chip" data-tag="MEME">#MEME <span class="count" id="cnt-tag-MEME"></span></div>
+      <div class="chip" data-tag="정치인">#정치인 <span class="count" id="cnt-tag-정치인"></span></div>
     </div>
   </div>
 
@@ -443,7 +454,7 @@
       if (el) el.textContent = count;
     });
 
-    const tags = ['all', ...(typeof tagList !== 'undefined' ? tagList : ['이모티콘', '밈 사진', '짤'])];
+    const tags = ['all', ...(typeof tagList !== 'undefined' ? tagList : ['이모티콘', '짤', 'MEME', '정치인'])];
     tags.forEach(t => {
       const count = pads.filter(p => {
         const pCat = getCat(p);
