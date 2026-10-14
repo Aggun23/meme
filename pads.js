@@ -4,7 +4,7 @@ const catName = {
   video: '영상'
 };
 
-const tagList = ['이모티콘', '짤', 'MEME', '정치인'];
+const tagList = ['이모티콘', '짤', 'MEME', '정치인', '프렌즈'];
 
 const pads = [
   // [ㄱ]
@@ -12,21 +12,21 @@ const pads = [
   { image: 'images/갈!!.jpg', label: '갈!!!!', cat: 'img', tags: ['짤'] },
   { image: 'images/개발자 테크트리.jpg', label: '개발자 테크트리', cat: 'img', tags: ['MEME'] },
   { image: 'images/개엔밍.webp', label: '개엔밍', cat: 'img', tags: ['이모티콘'] },
-  { image: 'images/건메 패드립1.jpg', label: '건메 패드립1', cat: 'img', tags: ['MEME'] },
-  { image: 'images/건메 패드립2.jpg', label: '건메 패드립2', cat: 'img', tags: ['MEME'] },
+  { image: 'images/건메 패드립1.jpg', label: '건메 패드립1', cat: 'img', tags: ['프렌즈'] },
+  { image: 'images/건메 패드립2.jpg', label: '건메 패드립2', cat: 'img', tags: ['프렌즈'] },
   { image: 'images/게이임.png', label: '게이임?', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/결국 손 나가는.webp', label: '결국 손 나가는', cat: 'img', tags: ['짤'] },
   { image: 'images/(경악).jpg', label: '(경악)', cat: 'img', tags: ['짤'] },
   { image: 'images/곰문곰문곰문.jpg', label: '곰문곰문곰문', cat: 'img', tags: ['MEME'] },
-  { image: 'images/공공의적.webp', label: '공공의 적', cat: 'img', tags: ['MEME'] },
+  { image: 'images/공공의적.webp', label: '공공의 적', cat: 'img', tags: ['짤'] },
   { image: 'images/공부 보이콧.jpg', label: '공부 보이콧', cat: 'img', tags: ['MEME'] },
   { image: 'images/교수 폭행.webp', label: '교수 폭행', cat: 'img', tags: ['MEME'] },
   { image: 'images/국맛.jpg', label: '국맛', cat: 'img', tags: ['짤'] },
   { image: 'images/굿~.jpg', label: '굿~', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/굿모니에.png', label: '굿모니에', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/그래서 이제 뭐함.jpg', label: '그래서 이제 뭐함?', cat: 'img', tags: ['짤'] },
-  { image: 'images/그럼 꺼져.jpg', label: '그럼 꺼져', cat: 'img', tags: ['짤'] },
-  { image: 'images/그리고 아무도 없었다.jpg', label: '그리고 아무도 없었다', cat: 'img', tags: ['짤', 'MEME'] },
+  { image: 'images/그럼 꺼져.jpg', label: '그럼 꺼져', cat: 'img', tags: ['MEME'] },
+  { image: 'images/그리고 아무도 없었다.jpg', label: '그리고 아무도 없었다', cat: 'img', tags: ['짤'] },
   { image: 'images/긴급상황.jpg', label: '긴급상황', cat: 'img', tags: ['짤'] },
   { image: 'images/끔찍한 최후다요.png', label: '끔찍한 최후다요', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/끝났다.webp', label: '끝났다', cat: 'img', tags: ['짤'] },
@@ -36,7 +36,7 @@ const pads = [
   { image: 'images/나쁜 답변 좋은 답변.webp', label: '나쁜 답변 좋은 답변', cat: 'img', tags: ['짤', 'MEME'] },
   { image: 'images/나쁜아이.png', label: '나쁜아이는 드럼통에', cat: 'img', tags: ['정치인', '이모티콘'] },
   { image: 'images/날 죽여라.jpg', label: '날 죽여라', cat: 'img', tags: ['짤'] },
-  { image: 'images/남자도 여자처럼 다루면.webp', label: '남자도 여자처럼 다루면', cat: 'img', tags: ['MEME'] },
+  { image: 'images/남자도 여자처럼 다루면.webp', label: '남자도 여자처럼 다루면', cat: 'img', tags: ['짤'] },
   { image: 'images/내면의 괴렘.gif', label: '내면의 괴렘', cat: 'gif', tags: ['이모티콘'] },
   { image: 'images/내입에내입에.webp', label: '내입에내입에', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/너처럼 눈치빠른 녀석은 싫다니까.jpg', label: '너처럼 눈치 빠른 녀석은', cat: 'img', tags: ['짤'] },
@@ -62,14 +62,14 @@ const pads = [
   { image: 'images/또 당신입니까.png', label: '또 당신입니까', cat: 'img', tags: ['이모티콘'] },
 
   // [ㄹ]
-  { image: 'images/라이드 더 라이트닝.jpg', label: '!라이드 더 라이트닝!', cat: 'img', tags: ['MEME'] },
+  { image: 'images/라이드 더 라이트닝.jpg', label: '!라이드 더 라이트닝!', cat: 'img', tags: ['짤'] },
 
   // [ㅁ]
-  { image: 'images/마음속에 매장.jpg', label: '마음속에 매장', cat: 'img', tags: ['짤'] },
+  { image: 'images/마음속에 매장.jpg', label: '마음속에 매장', cat: 'img', tags: ['MEME'] },
   { image: 'images/맛만 좋으면 그만.webp', label: '맛만 좋으면 그만', cat: 'img', tags: ['짤', 'MEME'] },
-  { image: 'images/매튜렁.webp', label: '매튜렁', cat: 'img', tags: ['MEME'] },
+  { image: 'images/매튜렁.webp', label: '매튜렁', cat: 'img', tags: ['MEME', '짤'] },
   { image: 'images/메숭이 이부키.png', label: '메숭이 이부키', cat: 'img', tags: ['이모티콘'] },
-  { image: 'images/메스냥이.jpg', label: '메스냥이', cat: 'img', tags: ['짤'] },
+  { image: 'images/메스냥이.jpg', label: '메스냥이', cat: 'img', tags: ['짤', 'MEME'] },
   { image: 'images/메이플 중독증.jpg', label: '메이플 중독', cat: 'img', tags: ['MEME'] },
   { image: 'images/지하실.webp', label: '밑바닥에도 바닥이', cat: 'img', tags: ['짤'] },
 
@@ -82,7 +82,7 @@ const pads = [
   { image: 'images/빨보추천.png', label: '빨보추천', cat: 'img', tags: ['이모티콘'] },
 
   // [ㅅ]
-  { image: 'images/사람은 실수의 동물.jpg', label: '사람은 실수의 동물', cat: 'img', tags: ['짤', 'MEME'] },
+  { image: 'images/사람은 실수의 동물.jpg', label: '사람은 실수의 동물', cat: 'img', tags: ['짤'] },
   { image: 'images/살려는 드릴께.gif', label: '살려는 드릴께', cat: 'gif', tags: ['짤'] },
   { image: 'images/살인이 이래서 나는구나.jpg', label: '살인이 이래서 나는구나', cat: 'img', tags: ['짤'] },
   { image: 'images/살짝덜깻어난.jpg', label: '살짝덜깻어난', cat: 'img', tags: ['짤'] },
@@ -92,7 +92,7 @@ const pads = [
   { image: 'images/시각을 포기한다.png', label: '시각을 포기한다', cat: 'img', tags: ['짤'] },
   { image: 'images/회색내복 블래스터1.jpg', label: '신창섭 블래스터1', cat: 'img', tags: ['MEME'] },
   { image: 'images/회색내복 블래스터2.jpg', label: '신창섭 블래스터2', cat: 'img', tags: ['MEME'] },
-  { image: 'images/쌀숭이.jpg', label: '쌀숭이', cat: 'img', tags: ['MEME'] },
+  { image: 'images/쌀숭이.jpg', label: '쌀숭이', cat: 'img', tags: ['짤'] },
   { video: 'images/쌀숭이 템플런.mp4', label: '쌀숭이 템플런', cat: 'video', tags: ['MEME'] },
   { image: 'images/씨 발 년.png', label: '씨 발 년', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/씹선비.jpg', label: '씹선비', cat: 'img', tags: ['짤'] },
@@ -153,7 +153,7 @@ const pads = [
   { image: 'images/터져서 없어짐.png', label: '터져서 없어짐', cat: 'img', tags: ['짤'] },
   { image: 'images/테이잉.webp', label: '테이잉', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/텐가로봇.gif', label: '텐가로봇', cat: 'gif', tags: ['MEME'] },
-  { image: 'images/퇴근하고 싶다.jpg', label: '퇴근하고 싶다', cat: 'img', tags: ['짤'] },
+  { image: 'images/퇴근하고 싶다.jpg', label: '퇴근하고 싶다', cat: 'img', tags: ['짤', 'MEME'] },
   { image: 'images/티모따봉.jpg', label: '티모따봉', cat: 'img', tags: ['이모티콘'] },
 
   // [ㅍ]
@@ -176,7 +176,7 @@ const pads = [
 
   // [A-Z]
   { image: 'images/EAT.jpg', label: 'EAT', cat: 'img', tags: ['이모티콘'] },
-  { image: 'images/PC정상화킥.gif', label: 'PC정상화킥', cat: 'gif', tags: ['MEME'] },
+  { image: 'images/PC정상화킥.gif', label: 'PC정상화킥', cat: 'gif', tags: ['MEME', '짤'] },
   { image: 'images/SIUUUU.jpg', label: 'SIUUUU', cat: 'img', tags: ['MEME'] },
   { image: 'images/VPN.jpg', label: 'VPN', cat: 'img', tags: ['MEME'] },
   { image: 'images/XBOX.jpg', label: 'XBOX', cat: 'img', tags: ['MEME'] },
