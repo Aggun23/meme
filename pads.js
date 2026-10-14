@@ -8,7 +8,7 @@ const tagList = ['이모티콘', '짤', 'MEME', '정치인'];
 
 const pads = [
   // [ㄱ]
-  { image: 'images/가챠 실패(화사).gif', label: '가챠 실패', cat: 'gif', tags: ['MEME'] },
+  { image: 'images/가챠 실패(화사).gif', label: '가챠 실패', cat: 'gif', tags: ['짤', 'MEME'] },
   { image: 'images/갈!!.jpg', label: '갈!!!!', cat: 'img', tags: ['짤'] },
   { image: 'images/개발자 테크트리.jpg', label: '개발자 테크트리', cat: 'img', tags: ['MEME'] },
   { image: 'images/개엔밍.webp', label: '개엔밍', cat: 'img', tags: ['이모티콘'] },
@@ -26,14 +26,14 @@ const pads = [
   { image: 'images/굿모니에.png', label: '굿모니에', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/그래서 이제 뭐함.jpg', label: '그래서 이제 뭐함?', cat: 'img', tags: ['짤'] },
   { image: 'images/그럼 꺼져.jpg', label: '그럼 꺼져', cat: 'img', tags: ['짤'] },
-  { image: 'images/그리고 아무도 없었다.jpg', label: '그리고 아무도 없었다', cat: 'img', tags: ['MEME'] },
+  { image: 'images/그리고 아무도 없었다.jpg', label: '그리고 아무도 없었다', cat: 'img', tags: ['짤', 'MEME'] },
   { image: 'images/긴급상황.jpg', label: '긴급상황', cat: 'img', tags: ['짤'] },
   { image: 'images/끔찍한 최후다요.png', label: '끔찍한 최후다요', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/끝났다.webp', label: '끝났다', cat: 'img', tags: ['짤'] },
 
   // [ㄴ]
   { image: 'images/나를 위해, 이재명.jpg', label: '나를 위해, 이재명', cat: 'img', tags: ['정치인', 'MEME'] },
-  { image: 'images/나쁜 답변 좋은 답변.webp', label: '나쁜 답변 좋은 답변', cat: 'img', tags: ['MEME'] },
+  { image: 'images/나쁜 답변 좋은 답변.webp', label: '나쁜 답변 좋은 답변', cat: 'img', tags: ['짤', 'MEME'] },
   { image: 'images/나쁜아이.png', label: '나쁜아이는 드럼통에', cat: 'img', tags: ['정치인', '이모티콘'] },
   { image: 'images/날 죽여라.jpg', label: '날 죽여라', cat: 'img', tags: ['짤'] },
   { image: 'images/남자도 여자처럼 다루면.webp', label: '남자도 여자처럼 다루면', cat: 'img', tags: ['MEME'] },
@@ -49,7 +49,7 @@ const pads = [
 
   // [ㄷ]
   { image: 'images/다 아는 사람들이구만.jpg', label: '다 아는 사람들이구만', cat: 'img', tags: ['정치인', '짤'] },
-  { image: 'images/대문자 I.jpg', label: '대문자 I', cat: 'img', tags: ['MEME'] },
+  { image: 'images/대문자 I.jpg', label: '대문자 I', cat: 'img', tags: ['짤', 'MEME'] },
   { image: 'images/대학생학대.jpg', label: '대학생학대', cat: 'img', tags: ['MEME'] },
   { video: 'images/댄싱히틀러.mp4', label: '댄싱히틀러', cat: 'video', tags: ['정치인', 'MEME'] },
   { image: 'images/오리 데니아.webp', label: '데니아 꽥꽥', cat: 'img', tags: ['이모티콘'] },
@@ -66,7 +66,7 @@ const pads = [
 
   // [ㅁ]
   { image: 'images/마음속에 매장.jpg', label: '마음속에 매장', cat: 'img', tags: ['짤'] },
-  { image: 'images/맛만 좋으면 그만.webp', label: '맛만 좋으면 그만', cat: 'img', tags: ['MEME'] },
+  { image: 'images/맛만 좋으면 그만.webp', label: '맛만 좋으면 그만', cat: 'img', tags: ['짤', 'MEME'] },
   { image: 'images/매튜렁.webp', label: '매튜렁', cat: 'img', tags: ['MEME'] },
   { image: 'images/메숭이 이부키.png', label: '메숭이 이부키', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/메스냥이.jpg', label: '메스냥이', cat: 'img', tags: ['짤'] },
@@ -75,14 +75,14 @@ const pads = [
 
   // [ㅂ]
   { image: 'images/박지말라고.png', label: '박지 말라고', cat: 'img', tags: ['이모티콘'] },
-  { image: 'images/범인은 현장에 나타난다.jpg', label: '범인은 현장에 나타난다', cat: 'img', tags: ['MEME'] },
+  { image: 'images/범인은 현장에 나타난다.jpg', label: '범인은 현장에 나타난다', cat: 'img', tags: ['짤', 'MEME'] },
   { image: 'images/변명 컷.jpg', label: '변명 컷', cat: 'img', tags: ['짤'] },
   { image: 'images/분노괴렘.png', label: '분노괴렘', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/빤.png', label: '빤-', cat: 'img', tags: ['정치인', '이모티콘'] },
   { image: 'images/빨보추천.png', label: '빨보추천', cat: 'img', tags: ['이모티콘'] },
 
   // [ㅅ]
-  { image: 'images/사람은 실수의 동물.jpg', label: '사람은 실수의 동물', cat: 'img', tags: ['MEME'] },
+  { image: 'images/사람은 실수의 동물.jpg', label: '사람은 실수의 동물', cat: 'img', tags: ['짤', 'MEME'] },
   { image: 'images/살려는 드릴께.gif', label: '살려는 드릴께', cat: 'gif', tags: ['짤'] },
   { image: 'images/살인이 이래서 나는구나.jpg', label: '살인이 이래서 나는구나', cat: 'img', tags: ['짤'] },
   { image: 'images/살짝덜깻어난.jpg', label: '살짝덜깻어난', cat: 'img', tags: ['짤'] },
@@ -143,7 +143,7 @@ const pads = [
   // [ㅋ]
   { image: 'images/카멜 따봉.jpg', label: '카멜 따봉', cat: 'img', tags: ['짤'] },
   { image: 'images/스탠드 카멜탈.webp', label: '카멜탈', cat: 'img', tags: ['MEME'] },
-  { image: 'images/캬루 찬양.jpg', label: '캬루 숭배', cat: 'img', tags: ['MEME'] },
+  { image: 'images/캬루 찬양.jpg', label: '캬루 숭배', cat: 'img', tags: ['짤', 'MEME'] },
   { image: 'images/캬루싸다구.jpg', label: '캬루 싸다구', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/코발정지.png', label: '코발정지', cat: 'img', tags: ['MEME'] },
   { image: 'images/콘센트에팡팡팡.gif', label: '콘센트에 팡팡팡', cat: 'gif', tags: ['MEME'] },
