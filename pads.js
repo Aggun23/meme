@@ -1,21 +1,21 @@
-const catName = {
+var catName = {
   img: '이미지',
   gif: 'GIF',
   video: '영상'
 };
 
-const typeList = ['이모티콘', '짤', 'MEME'];
-const extraTagList = ['정치', '프렌즈'];
-const tagList = ['이모티콘', '짤', 'MEME', '정치', '프렌즈'];
+var typeList = ['이모티콘', '짤', 'MEME'];
+var extraTagList = ['정치', '프렌즈'];
+var tagList = ['이모티콘', '짤', 'MEME', '정치', '프렌즈'];
 
-const pads = [
+var pads = [
   // [ㄱ]
   { image: 'images/가챠 실패(화사).gif', label: '가챠 실패', cat: 'gif', tags: ['짤', 'MEME'] },
   { image: 'images/갈!!.jpg', label: '갈!!!!', cat: 'img', tags: ['짤'] },
   { image: 'images/개발자 테크트리.jpg', label: '개발자 테크트리', cat: 'img', tags: ['MEME'] },
   { image: 'images/개엔밍.webp', label: '개엔밍', cat: 'img', tags: ['이모티콘'] },
-  { image: 'images/건메 패드립1.jpg', label: '건메 패드립1', cat: 'img', tags: ['MEME', '프렌즈'] },
-  { image: 'images/건메 패드립2.jpg', label: '건메 패드립2', cat: 'img', tags: ['MEME', '프렌즈'] },
+  { image: 'images/건메 패드립1.jpg', label: '건메 패드립1', cat: 'img', tags: ['MEME'] },
+  { image: 'images/건메 패드립2.jpg', label: '건메 패드립2', cat: 'img', tags: ['MEME'] },
   { image: 'images/게이임.png', label: '게이임?', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/결국 손 나가는.webp', label: '결국 손 나가는', cat: 'img', tags: ['짤'] },
   { image: 'images/(경악).jpg', label: '(경악)', cat: 'img', tags: ['짤'] },
@@ -181,5 +181,5 @@ const pads = [
   { image: 'images/PC정상화킥.gif', label: 'PC정상화킥', cat: 'gif', tags: ['MEME'] },
   { image: 'images/SIUUUU.jpg', label: 'SIUUUU', cat: 'img', tags: ['MEME'] },
   { image: 'images/VPN.jpg', label: 'VPN', cat: 'img', tags: ['MEME'] },
-  { image: 'images/XBOX.jpg', label: 'XBOX', cat: 'img', tags: ['MEME'] },
+  { image: 'images/XBOX.jpg', label: 'XBOX', cat: 'img', tags: ['MEME'] }
 ];
