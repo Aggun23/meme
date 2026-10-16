@@ -20,7 +20,7 @@ var pads = [
   { image: 'images/결국 손 나가는.webp', label: '결국 손 나가는', cat: 'img', tags: ['짤'] },
   { image: 'images/(경악).jpg', label: '(경악)', cat: 'img', tags: ['짤'] },
   { image: 'images/곰문곰문곰문.jpg', label: '곰문곰문곰문', cat: 'img', tags: ['MEME'] },
-  { image: 'images/공공의적.webp', label: '공공의 적', cat: 'img', tags: ['MEME'] },
+  { image: 'images/공공의적.webp', label: '공공의 적', cat: 'img', tags: ['짤'] },
   { image: 'images/공부 보이콧.jpg', label: '공부 보이콧', cat: 'img', tags: ['MEME'] },
   { image: 'images/교수 폭행.webp', label: '교수 폭행', cat: 'img', tags: ['MEME'] },
   { image: 'images/국맛.jpg', label: '국맛', cat: 'img', tags: ['짤'] },
@@ -64,12 +64,12 @@ var pads = [
   { image: 'images/또 당신입니까.png', label: '또 당신입니까', cat: 'img', tags: ['이모티콘'] },
 
   // [ㄹ]
-  { image: 'images/라이드 더 라이트닝.jpg', label: '!라이드 더 라이트닝!', cat: 'img', tags: ['MEME'] },
+  { image: 'images/라이드 더 라이트닝.jpg', label: '!라이드 더 라이트닝!', cat: 'img', tags: ['짤'] },
 
   // [ㅁ]
-  { image: 'images/마음속에 매장.jpg', label: '마음속에 매장', cat: 'img', tags: ['짤'] },
+  { image: 'images/마음속에 매장.jpg', label: '마음속에 매장', cat: 'img', tags: ['MEME'] },
   { image: 'images/맛만 좋으면 그만.webp', label: '맛만 좋으면 그만', cat: 'img', tags: ['짤', 'MEME'] },
-  { image: 'images/매튜렁.webp', label: '매튜렁', cat: 'img', tags: ['MEME'] },
+  { image: 'images/매튜렁.webp', label: '매튜렁', cat: 'img', tags: ['짤'] },
   { image: 'images/메숭이 이부키.png', label: '메숭이 이부키', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/메스냥이.jpg', label: '메스냥이', cat: 'img', tags: ['짤'] },
   { image: 'images/메이플 중독증.jpg', label: '메이플 중독', cat: 'img', tags: ['MEME'] },
@@ -94,7 +94,7 @@ var pads = [
   { image: 'images/시각을 포기한다.png', label: '시각을 포기한다', cat: 'img', tags: ['짤'] },
   { image: 'images/회색내복 블래스터1.jpg', label: '신창섭 블래스터1', cat: 'img', tags: ['MEME'] },
   { image: 'images/회색내복 블래스터2.jpg', label: '신창섭 블래스터2', cat: 'img', tags: ['MEME'] },
-  { image: 'images/쌀숭이.jpg', label: '쌀숭이', cat: 'img', tags: ['MEME'] },
+  { image: 'images/쌀숭이.jpg', label: '쌀숭이', cat: 'img', tags: ['짤'] },
   { video: 'images/쌀숭이 템플런.mp4', label: '쌀숭이 템플런', cat: 'video', tags: ['MEME'] },
   { image: 'images/씨 발 년.png', label: '씨 발 년', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/씹선비.jpg', label: '씹선비', cat: 'img', tags: ['짤'] },
@@ -181,5 +181,5 @@ var pads = [
   { image: 'images/PC정상화킥.gif', label: 'PC정상화킥', cat: 'gif', tags: ['MEME'] },
   { image: 'images/SIUUUU.jpg', label: 'SIUUUU', cat: 'img', tags: ['MEME'] },
   { image: 'images/VPN.jpg', label: 'VPN', cat: 'img', tags: ['MEME'] },
-  { image: 'images/XBOX.jpg', label: 'XBOX', cat: 'img', tags: ['MEME'] }
+  { image: 'images/XBOX.jpg', label: 'XBOX', cat: 'img', tags: ['MEME'] },
 ];
