@@ -5,8 +5,8 @@ var catName = {
 };
 
 var typeList = ['이모티콘', '짤', 'MEME'];
-var extraTagList = ['정치', '프렌즈'];
-var tagList = ['이모티콘', '짤', 'MEME', '정치', '프렌즈'];
+var extraTagList = ['정치', '프렌즈', '슈우로롱'];
+var tagList = ['이모티콘', '짤', 'MEME', '정치', '프렌즈', '슈우로롱'];
 
 var pads = [
   // [ㄱ]
@@ -90,6 +90,8 @@ var pads = [
   { image: 'images/살짝덜깻어난.jpg', label: '살짝덜깻어난', cat: 'img', tags: ['짤'] },
   { image: 'images/상처만 남는 게임.png', label: '상처뿐인 게임', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/섭종.png', label: '섭종', cat: 'img', tags: ['이모티콘'] },
+  { image: 'images/슈로롱.gif', label: '슈로롱', cat: 'gif', tags: ['짤', '슈우로롱'] },
+  { image: 'images/슈로오옹.gif', label: '슈로오옹', cat: 'gif', tags: ['짤', '슈우로롱'] },
   { image: 'images/스피키 나만볼수없지.webp', label: '스피키 나만 볼수없지', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/시각을 포기한다.png', label: '시각을 포기한다', cat: 'img', tags: ['짤'] },
   { image: 'images/회색내복 블래스터1.jpg', label: '신창섭 블래스터1', cat: 'img', tags: ['MEME'] },
@@ -115,6 +117,7 @@ var pads = [
   { image: 'images/예수 2077.gif', label: '예수 2077', cat: 'gif', tags: ['MEME'] },
   { image: 'images/오픈 마인드.jpg', label: '오픈 마인드', cat: 'img', tags: ['짤'] },
   { image: 'images/완벽히 이해했어.jpg', label: '완벽히 이해했어', cat: 'img', tags: ['이모티콘', '짤'] },
+  { image: 'images/우로롱.gif', label: '우로롱', cat: 'gif', tags: ['짤', '슈우로롱'] },
   { image: 'images/우매함의 봉우리.jpg', label: '우매함의 봉우리', cat: 'img', tags: ['짤', 'MEME'] },
   { image: 'images/유어웰컴.jpg', label: '유어웰컴', cat: 'img', tags: ['짤'] },
   { image: 'images/유치원생 애호가.jpg', label: '유치원생 애호가', cat: 'img', tags: ['MEME'] },
