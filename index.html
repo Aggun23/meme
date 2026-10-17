@@ -1694,6 +1694,29 @@
     ta.remove();
   }
 
+  // PNG 변환이나 파일 다운로드 없이 GIF 원본 데이터/HTML/URL을 클립보드에 바로 복사
+  function copyRichGifFallback(absUrl, label) {
+    const listener = (e) => {
+      e.preventDefault();
+      if (e.clipboardData) {
+        e.clipboardData.setData('text/html', `<img src="${absUrl}" alt="${label}">`);
+        e.clipboardData.setData('text/plain', absUrl);
+      }
+    };
+    document.addEventListener('copy', listener, { once: true });
+    const ta = document.createElement('textarea');
+    ta.value = absUrl;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand('copy');
+    } catch (e) {}
+    ta.remove();
+    document.removeEventListener('copy', listener);
+  }
+
   editModeBtn.addEventListener('click', () => {
     editMode = !editMode;
     editModeBtn.classList.toggle('active', editMode);
@@ -1763,8 +1786,10 @@
 
     try {
       const targetUrl = p._previewUrl || p.video || p.image;
+      const pCat = getCat(p);
+      const isGif = pCat === 'gif' || (targetUrl && /\.gif($|\?)/i.test(targetUrl));
 
-      if (p.video) {
+      if (p.video || pCat === 'video') {
         const rawPath = p.video || p.label;
         const fileName = rawPath.split('/').pop();
         const a = document.createElement('a');
@@ -1774,7 +1799,65 @@
         a.click();
         a.remove();
 
-        showToast(`'${p.label}' 다운로드됨`);
+        showToast(`'${p.label}' 영상 다운로드됨`);
+      } else if (isGif) {
+        // GIF는 절대 PNG(<canvas>)로 변환하거나 다운로드하지 않고 즉시 GIF로만 클립보드에 복사
+        const absUrl = new URL(targetUrl, window.location.href).href;
+        const htmlBlob = new Blob([`<img src="${absUrl}" alt="${p.label}">`], { type: 'text/html' });
+        const textBlob = new Blob([absUrl], { type: 'text/plain' });
+
+        let copiedGif = false;
+        let gifBlob = null;
+
+        try {
+          const response = await fetch(targetUrl);
+          if (response.ok) {
+            const rawBlob = await response.blob();
+            gifBlob = rawBlob.type === 'image/gif'
+              ? rawBlob
+              : new Blob([rawBlob], { type: 'image/gif' });
+          }
+        } catch (fetchErr) {}
+
+        if (navigator.clipboard && window.ClipboardItem) {
+          if (gifBlob) {
+            try {
+              await navigator.clipboard.write([
+                new ClipboardItem({ 'image/gif': gifBlob })
+              ]);
+              copiedGif = true;
+            } catch (err1) {
+              try {
+                await navigator.clipboard.write([
+                  new ClipboardItem({
+                    'web image/gif': gifBlob,
+                    'text/html': htmlBlob,
+                    'text/plain': textBlob
+                  })
+                ]);
+                copiedGif = true;
+              } catch (err2) {}
+            }
+          }
+
+          if (!copiedGif) {
+            try {
+              await navigator.clipboard.write([
+                new ClipboardItem({
+                  'text/html': htmlBlob,
+                  'text/plain': textBlob
+                })
+              ]);
+              copiedGif = true;
+            } catch (err3) {}
+          }
+        }
+
+        if (!copiedGif) {
+          copyRichGifFallback(absUrl, p.label);
+        }
+
+        showToast(`'${p.label}' GIF 복사됨 → Ctrl+V`);
       } else if (p.image) {
         const response = await fetch(targetUrl);
         const blob = await response.blob();
@@ -1804,7 +1887,7 @@
       }
     } catch (e) {
       copyTextSafe(p.label);
-      showToast(`'${p.label}' 이름 복사됨 (로컬/실서버에서 이미지 복사 작동)`);
+      showToast(`'${p.label}' 복사됨`);
     }
 
     recent = recent.filter(r => getPadKey(r) !== getPadKey(p));
@@ -1836,7 +1919,7 @@
     recent.forEach(p => {
       const item = document.createElement('div');
       item.className = 'recent-item';
-      item.title = '클릭하면 다시 복사/다운로드합니다';
+      item.title = '클릭하면 다시 복사합니다';
 
       const thumbSrc = p._previewUrl || p.image;
       const thumbFallback = `https://placehold.co/48x48/1d2229/f2f1ed?text=${encodeURIComponent(p.label.slice(0, 2))}`;
