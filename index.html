@@ -1818,27 +1818,22 @@
         a.remove();
 
         showToast(`'${p.label}' 영상 다운로드됨`);
-      } else if (isGif) {
-        const response = await fetch(targetUrl);
-        if (!response.ok) throw new Error(`GIF 요청 실패: ${response.status}`);
-        const gifBlob = await response.blob();
-        const header = new TextDecoder('ascii').decode(await gifBlob.slice(0, 6).arrayBuffer());
-        if (header !== 'GIF87a' && header !== 'GIF89a') throw new Error('GIF 파일이 아닙니다.');
-        const gifDataUrl = await blobToDataUrl(gifBlob);
-        let copied = false;
-        // 첫째: GIF 원본을 HTML 이미지로 복사 (PNG 변환 없음).
-        // execCommand가 작동하지 않을 때 Clipboard API로 HTML만 기록.
-        try { copied = copyRichGifFallback(gifDataUrl, p.label); }
-        catch (error) { console.warn('GIF HTML 복사 실패:', error); }
-        if (!copied && navigator.clipboard?.write && window.ClipboardItem) {
-          const html = `<img src="${gifDataUrl}" alt="${p.label.replaceAll('"', '&quot;')}">`;
-          await navigator.clipboard.write([new ClipboardItem({
-            'text/html': new Blob([html], { type: 'text/html' })
-          })]);
-          copied = true;
+      } else if (isGif && !/^(blob|data):/i.test(targetUrl)) {
+        // GIF 주소(절대 URL)를 복사: 디스코드에 붙여넣으면 움직이는 GIF로 올라가고, 링크만 보내면 주소 글자는 숨겨진다.
+        const gifUrl = new URL(targetUrl, location.href).href;
+        try {
+          await navigator.clipboard.writeText(gifUrl);
+        } catch (e) {
+          copyTextSafe(gifUrl);
         }
-        if (!copied) throw new Error('GIF 클립보드 복사 실패');
-        showToast(`'${p.label}' GIF HTML 복사됨 → Ctrl+V (대상 앱 지원 필요)`);
+        showToast(`'${p.label}' GIF 복사됨 → 디스코드에 Ctrl+V`);
+      } else if (isGif) {
+        // 방금 추가해 아직 업로드 전인 GIF(blob 주소)는 링크가 없으므로 HTML 이미지로 복사.
+        const response = await fetch(targetUrl);
+        const gifBlob = await response.blob();
+        const gifDataUrl = await blobToDataUrl(gifBlob);
+        if (!copyRichGifFallback(gifDataUrl, p.label)) throw new Error('GIF 클립보드 복사 실패');
+        showToast(`'${p.label}' GIF 복사됨 (업로드 전 파일)`);
       } else if (p.image) {
         const response = await fetch(targetUrl);
         const blob = await response.blob();
