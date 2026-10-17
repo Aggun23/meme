@@ -41,6 +41,7 @@ var pads = [
   { image: 'images/남자도 여자처럼 다루면.webp', label: '남자도 여자처럼 다루면', cat: 'img', tags: ['MEME'] },
   { image: 'images/내면의 괴렘.gif', label: '내면의 괴렘', cat: 'gif', tags: ['이모티콘'] },
   { image: 'images/내입에내입에.webp', label: '내입에내입에', cat: 'img', tags: ['이모티콘'] },
+  { image: 'images/너무 심한 말은 쓰지마.webp', label: '너무 심한 말은 쓰지마', cat: 'img', tags: ['짤'] },
   { image: 'images/너처럼 눈치빠른 녀석은 싫다니까.jpg', label: '너처럼 눈치 빠른 녀석은', cat: 'img', tags: ['짤'] },
   { image: 'images/농구가 하고 싶어요.jpg', label: '농구가 하고 싶어요', cat: 'img', tags: ['짤'] },
   { image: 'images/뇌손상.jpg', label: '뇌손상', cat: 'img', tags: ['짤'] },
