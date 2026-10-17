@@ -39,6 +39,7 @@
     --tag-meme: #b36bff;
     --tag-pol: #fed330;
     --tag-friends: #45aaf2;
+    --tag-shurorong: #ff6b81;
     --tag-extra: #ff793f;
   }
 
@@ -198,7 +199,7 @@
     font-size: 12px;
     padding: 7px 10px;
     border-radius: 8px;
-    width: 145px;
+    width: 150px;
     outline: none;
   }
 
@@ -350,6 +351,10 @@
 
   .chip[data-theme="프렌즈"].active {
     background: var(--tag-friends);
+  }
+
+  .chip[data-theme="슈우로롱"].active {
+    background: var(--tag-shurorong);
   }
 
   .grid {
@@ -567,6 +572,12 @@
     color: var(--tag-friends);
   }
 
+  .tag.sub-theme[data-t="슈우로롱"] {
+    background: rgba(255, 107, 129, 0.12);
+    border-color: rgba(255, 107, 129, 0.45);
+    color: var(--tag-shurorong);
+  }
+
   .edit-tag-btn {
     font-size: 10px;
     font-weight: 700;
@@ -620,6 +631,12 @@
     color: var(--tag-friends);
     border-color: var(--tag-friends);
     background: rgba(69, 170, 242, 0.14);
+  }
+
+  .edit-tag-btn.on[data-t="슈우로롱"] {
+    color: var(--tag-shurorong);
+    border-color: var(--tag-shurorong);
+    background: rgba(255, 107, 129, 0.14);
   }
 
   .pad.hidden {
@@ -1013,11 +1030,11 @@
     { image: 'images/XBOX.jpg', label: 'XBOX', cat: 'img', tags: ['MEME'] }
   ];
 
-  window.catName = window.catName || { img: '이미지', gif: 'GIF', video: '영상' };
-  window.typeList = window.typeList || ['이모티콘', '짤', 'MEME'];
-  window.extraTagList = window.extraTagList || ['정치', '프렌즈', '슈우로롱'];
-  window.tagList = window.tagList || ['이모티콘', '짤', 'MEME', '정치', '프렌즈', '슈우로롱'];
-  window.pads = Array.isArray(window.pads) ? window.pads : defaultPadsData.map(item => ({ ...item, tags: [...item.tags] }));
+  window.catName = { img: '이미지', gif: 'GIF', video: '영상' };
+  window.typeList = ['이모티콘', '짤', 'MEME'];
+  window.extraTagList = ['정치', '프렌즈', '슈우로롱'];
+  window.tagList = ['이모티콘', '짤', 'MEME', '정치', '프렌즈', '슈우로롱'];
+  window.pads = defaultPadsData.map(item => ({ ...item, tags: [...item.tags] }));
 
   const grid = document.getElementById('grid');
   const recentRow = document.getElementById('recentRow');
@@ -1107,6 +1124,10 @@
       : ['정치', '프렌즈', '슈우로롱'];
     currentThemeList = [...new Set(rawExtra)];
 
+    if (!currentThemeList.includes('슈우로롱')) {
+      currentThemeList.push('슈우로롱');
+    }
+
     if (Array.isArray(window.tagList)) {
       window.tagList.forEach(rawT => {
         const t = rawT === '정치인' ? '정치' : rawT;
@@ -1115,6 +1136,15 @@
         }
       });
     }
+
+    // 최신 기본 데이터(슈로롱, 슈로오옹, 우로롱 등)가 누락되지 않도록 보강
+    defaultPadsData.forEach(defItem => {
+      const defPath = defItem.video || defItem.image;
+      const existing = window.pads.find(p => (p.video || p.image) === defPath);
+      if (!existing) {
+        window.pads.push({ ...defItem, tags: [...defItem.tags] });
+      }
+    });
 
     window.pads.forEach(p => {
       const path = p.video || p.image;
@@ -1738,7 +1768,8 @@
 
       // 영상(video) 및 GIF(gif)는 정지 이미지 변환 없이 원본 파일을 바로 다운로드
       if (p.video || pCat === 'gif') {
-        const fileName = (p.video || p.image || p.label).split('/').pop();
+        const rawPath = p.video || p.image || p.label;
+        const fileName = rawPath.split('/').pop();
         let downloadHref = targetUrl;
         let revokeAfter = false;
 
