@@ -792,7 +792,7 @@
     <div class="header-right">
       <div class="search-wrap">
         <input id="search" type="text" placeholder="이름·초성·태그 검색 (예: ㄱㅇㅁ, @슈우로롱)">
-        <span class="enter-hint" title="검색 후 Enter를 누르면 첫 번째 짤이 바로 복사/다운로드됩니다">Enter ↵</span>
+        <span class="enter-hint" title="검색 후 Enter를 누르면 첫 번째 짤이 바로 복사됩니다">Enter ↵</span>
       </div>
       <button id="editModeBtn" class="btn-edit-mode" type="button">⚙️ 태그 편집</button>
     </div>
@@ -837,7 +837,7 @@
   <div class="grid" id="grid"></div>
 
   <div class="recent-header">
-    <div class="recent-label">최근 사용 (클릭하면 바로 복사/다운로드)</div>
+    <div class="recent-label">최근 사용 (클릭하면 바로 복사)</div>
     <button id="clearRecentBtn" class="recent-clear-btn" type="button">기록 비우기</button>
   </div>
   <div class="recent-row" id="recentRow">
@@ -1137,7 +1137,6 @@
       });
     }
 
-    // 최신 기본 데이터(슈로롱, 슈로오옹, 우로롱 등)가 누락되지 않도록 보강
     defaultPadsData.forEach(defItem => {
       const defPath = defItem.video || defItem.image;
       const existing = window.pads.find(p => (p.video || p.image) === defPath);
@@ -1764,38 +1763,18 @@
 
     try {
       const targetUrl = p._previewUrl || p.video || p.image;
-      const pCat = getCat(p);
 
-      // 영상(video) 및 GIF(gif)는 정지 이미지 변환 없이 원본 파일을 바로 다운로드
-      if (p.video || pCat === 'gif') {
-        const rawPath = p.video || p.image || p.label;
+      if (p.video) {
+        const rawPath = p.video || p.label;
         const fileName = rawPath.split('/').pop();
-        let downloadHref = targetUrl;
-        let revokeAfter = false;
-
-        try {
-          if (targetUrl && !targetUrl.startsWith('blob:')) {
-            const res = await fetch(targetUrl);
-            if (res.ok) {
-              const blob = await res.blob();
-              downloadHref = URL.createObjectURL(blob);
-              revokeAfter = true;
-            }
-          }
-        } catch (err) {}
-
         const a = document.createElement('a');
-        a.href = downloadHref;
+        a.href = targetUrl;
         a.download = fileName;
         document.body.appendChild(a);
         a.click();
         a.remove();
 
-        if (revokeAfter) {
-          setTimeout(() => URL.revokeObjectURL(downloadHref), 1000);
-        }
-
-        showToast(`'${p.label}' ${pCat === 'gif' ? 'GIF ' : ''}다운로드됨`);
+        showToast(`'${p.label}' 다운로드됨`);
       } else if (p.image) {
         const response = await fetch(targetUrl);
         const blob = await response.blob();
