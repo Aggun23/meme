@@ -1703,29 +1703,36 @@
     });
   }
 
-  // GIF 원본을 PNG로 변환하지 않는다.
-  // 브라우저가 image/gif 클립보드 쓰기를 허용할 때만 실제 GIF 복사 성공으로 처리한다.
-  async function copyOriginalGif(gifBlob) {
-    if (!navigator.clipboard?.write || !window.ClipboardItem) {
-      throw new Error('이 브라우저는 이미지 클립보드 쓰기를 지원하지 않습니다.');
+  // HTML 이미지로 복사: PNG 프레임/텍스트 URL은 클립보드에 쓰지 않음.
+  // 붙여넣기 대상 앱이 HTML의 GIF 이미지를 지원해야 애니메이션이 유지된다.
+  function copyRichGifFallback(gifSrc, label) {
+    const holder = document.createElement('div');
+    holder.contentEditable = 'true';
+    holder.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0';
+    const img = document.createElement('img');
+    img.src = gifSrc;
+    img.alt = label;
+    holder.appendChild(img);
+    document.body.appendChild(holder);
+    const selection = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents(holder);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    const onCopy = e => {
+      if (!e.clipboardData) return;
+      e.clipboardData.setData('text/html', holder.innerHTML);
+      e.preventDefault();
+    };
+    document.addEventListener('copy', onCopy);
+    let success = false;
+    try { success = document.execCommand('copy'); }
+    finally {
+      document.removeEventListener('copy', onCopy);
+      selection.removeAllRanges();
+      holder.remove();
     }
-    if (ClipboardItem.supports && !ClipboardItem.supports('image/gif')) {
-      throw new Error('이 브라우저는 GIF 원본 클립보드 복사를 지원하지 않습니다.');
-    }
-    await navigator.clipboard.write([
-      new ClipboardItem({ 'image/gif': gifBlob })
-    ]);
-  }
-
-  function downloadOriginalGif(blob, path) {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = decodeURIComponent(path.split('/').pop().split('?')[0]) || 'image.gif';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    return success;
   }
 
   editModeBtn.addEventListener('click', () => {
@@ -1815,22 +1822,23 @@
         const response = await fetch(targetUrl);
         if (!response.ok) throw new Error(`GIF 요청 실패: ${response.status}`);
         const gifBlob = await response.blob();
-        // MIME만 덮어씌우지 않고 실제 GIF 파일 헤더도 확인한다.
-        const signature = new TextDecoder('ascii').decode(await gifBlob.slice(0, 6).arrayBuffer());
-        if (signature !== 'GIF87a' && signature !== 'GIF89a') {
-          throw new Error('원본 파일이 GIF 형식이 아닙니다.');
+        const header = new TextDecoder('ascii').decode(await gifBlob.slice(0, 6).arrayBuffer());
+        if (header !== 'GIF87a' && header !== 'GIF89a') throw new Error('GIF 파일이 아닙니다.');
+        const gifDataUrl = await blobToDataUrl(gifBlob);
+        let copied = false;
+        // 첫째: GIF 원본을 HTML 이미지로 복사 (PNG 변환 없음).
+        // execCommand가 작동하지 않을 때 Clipboard API로 HTML만 기록.
+        try { copied = copyRichGifFallback(gifDataUrl, p.label); }
+        catch (error) { console.warn('GIF HTML 복사 실패:', error); }
+        if (!copied && navigator.clipboard?.write && window.ClipboardItem) {
+          const html = `<img src="${gifDataUrl}" alt="${p.label.replaceAll('"', '&quot;')}">`;
+          await navigator.clipboard.write([new ClipboardItem({
+            'text/html': new Blob([html], { type: 'text/html' })
+          })]);
+          copied = true;
         }
-
-        try {
-          await copyOriginalGif(new Blob([gifBlob], { type: 'image/gif' }));
-          showToast(`'${p.label}' GIF 원본 복사됨 → Ctrl+V`);
-        } catch (clipboardError) {
-          // Chrome 등에서는 image/gif 클립보드 기록을 지원하지 않는다.
-          // PNG나 링크를 대신 복사하고 성공이라고 표시하지 않는다.
-          console.warn('GIF 원본 복사 불가:', clipboardError);
-          showToast('브라우저가 GIF 원본 복사를 지원하지 않습니다. GIF 다운로드로 대체합니다.');
-          downloadOriginalGif(gifBlob, targetUrl);
-        }
+        if (!copied) throw new Error('GIF 클립보드 복사 실패');
+        showToast(`'${p.label}' GIF HTML 복사됨 → Ctrl+V (대상 앱 지원 필요)`);
       } else if (p.image) {
         const response = await fetch(targetUrl);
         const blob = await response.blob();
@@ -1859,8 +1867,9 @@
         showToast(`'${p.label}' 복사됨`);
       }
     } catch (e) {
-      console.error('짤 처리 실패:', e);
-      showToast(`'${p.label}' 처리 실패: 파일 또는 권한을 확인하세요.`);
+      console.error('복사 실패:', e);
+      if (getCat(p) === 'gif') showToast(`'${p.label}' GIF 복사 실패 (PNG나 주소로 대체하지 않음)`);
+      else { copyTextSafe(p.label); showToast(`'${p.label}' 복사됨`); }
     }
 
     recent = recent.filter(r => getPadKey(r) !== getPadKey(p));
