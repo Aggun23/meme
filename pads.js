@@ -43,6 +43,7 @@ var pads = [
   { image: 'images/내입에내입에.webp', label: '내입에내입에', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/너무 심한 말은 쓰지마.webp', label: '너무 심한 말은 쓰지마', cat: 'img', tags: ['짤'] },
   { image: 'images/너처럼 눈치빠른 녀석은 싫다니까.jpg', label: '너처럼 눈치 빠른 녀석은', cat: 'img', tags: ['짤'] },
+  { image: 'images/녀석들에게 보여준 걸.jpg', label: '녀석들에게 보여준 걸', cat: 'img', tags: ['짤'] },
   { image: 'images/농구가 하고 싶어요.jpg', label: '농구가 하고 싶어요', cat: 'img', tags: ['짤'] },
   { image: 'images/뇌손상.jpg', label: '뇌손상', cat: 'img', tags: ['짤'] },
   { image: 'images/뇌에서릭롤링.jpg', label: '뇌에서릭롤링', cat: 'img', tags: ['MEME'] },
@@ -141,6 +142,7 @@ var pads = [
   { image: 'images/즐거운 인생 내리막길.jpg', label: '즐거운 인생 내리막길', cat: 'img', tags: ['짤'] },
   { image: 'images/지구공룡설.webp', label: '지구공룡설', cat: 'img', tags: ['MEME'] },
   { image: 'images/진조가 그럴수도 있지.png', label: '진조가 그럴수도 있지', cat: 'img', tags: ['이모티콘'] },
+  { image: 'images/집 가.jpg', label: '집 가', cat: 'img', tags: ['짤'] },
 
   // [ㅊ]
   { video: 'images/펠린소맨.mp4', label: '체인소 펠리카', cat: 'video', tags: ['MEME'] },
@@ -163,6 +165,7 @@ var pads = [
   { image: 'images/티모따봉.jpg', label: '티모따봉', cat: 'img', tags: ['이모티콘'] },
 
   // [ㅍ]
+  { image: 'images/페빠따.webp', label: '페빠따', cat: 'img', tags: ['짤'] },
   { image: 'images/포기하는 순간이.jpg', label: '포기하는 순간이 시합종료', cat: 'img', tags: ['짤'] },
   { image: 'images/핑거스냅.jpg', label: '핑거스냅당', cat: 'img', tags: ['MEME'] },
 
