@@ -75,6 +75,7 @@ var pads = [
   { image: 'images/메숭이 이부키.png', label: '메숭이 이부키', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/메스냥이.jpg', label: '메스냥이', cat: 'img', tags: ['짤'] },
   { image: 'images/메이플 중독증.jpg', label: '메이플 중독', cat: 'img', tags: ['MEME'] },
+  { image: 'images/미친 얘기 같지만 전부 사실이에요.webp', label: '미친 얘기 같지만 전부 사실이에요', cat: 'img', tags: ['짤'] },
   { image: 'images/지하실.webp', label: '밑바닥에도 바닥이', cat: 'img', tags: ['짤'] },
 
   // [ㅂ]
@@ -173,6 +174,7 @@ var pads = [
   { image: 'images/하셔야합니다 실타.jpg', label: '하셔야합니다 실타', cat: 'img', tags: ['짤'] },
   { image: 'images/한가위 괴렘.png', label: '한가위 괴렘', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/한가위 도황.jpg', label: '한가위 도황', cat: 'img', tags: ['짤'] },
+  { image: 'images/한잔해.webp', label: '한잔해', cat: 'img', tags: ['짤'] },
   { image: 'images/행복하다면 OK.jpg', label: '행복하다면 OK', cat: 'img', tags: ['짤'] },
   { image: 'images/헤.jpg', label: '헤', cat: 'img', tags: ['짤'] },
   { image: 'images/호에에 합창단.jpg', label: '호에에에', cat: 'img', tags: ['짤'] },
