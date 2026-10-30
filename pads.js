@@ -15,6 +15,8 @@ var pads = [
   { image: 'images/개덜덜.gif', label: '개덜덜', cat: 'gif', tags: ['짤'] },
   { image: 'images/개발자 테크트리.jpg', label: '개발자 테크트리', cat: 'img', tags: ['MEME'] },
   { image: 'images/개엔밍.webp', label: '개엔밍', cat: 'img', tags: ['이모티콘'] },
+  { image: 'images/건강한 게임.png', label: '건강한 게임', cat: 'img', tags: ['짤'] },
+  { image: 'images/건강한 게임2.png', label: '건강한 게임2', cat: 'img', tags: ['짤'] },
   { image: 'images/건메 패드립1.jpg', label: '건메 패드립1', cat: 'img', tags: ['MEME', '프렌즈'] },
   { image: 'images/건메 패드립2.jpg', label: '건메 패드립2', cat: 'img', tags: ['MEME', '프렌즈'] },
   { image: 'images/게이임.png', label: '게이임?', cat: 'img', tags: ['이모티콘'] },
@@ -89,6 +91,7 @@ var pads = [
 
   // [ㅂ]
   { image: 'images/박지말라고.png', label: '박지 말라고', cat: 'img', tags: ['이모티콘'] },
+  { image: 'images/버튼.png', label: '버튼', cat: 'img', tags: ['짤'] },
   { image: 'images/범인은 현장에 나타난다.jpg', label: '범인은 현장에 나타난다', cat: 'img', tags: ['짤', 'MEME'] },
   { image: 'images/변명 컷.jpg', label: '변명 컷', cat: 'img', tags: ['짤'] },
   { image: 'images/분노괴렘.png', label: '분노괴렘', cat: 'img', tags: ['이모티콘'] },
@@ -108,6 +111,7 @@ var pads = [
   { image: 'images/시각을 포기한다.png', label: '시각을 포기한다', cat: 'img', tags: ['짤'] },
   { image: 'images/회색내복 블래스터1.jpg', label: '신창섭 블래스터1', cat: 'img', tags: ['MEME'] },
   { image: 'images/회색내복 블래스터2.jpg', label: '신창섭 블래스터2', cat: 'img', tags: ['MEME'] },
+  { image: 'images/심지어 동물과도 가능!.png', label: '심지어 동물과도 가능!', cat: 'img', tags: ['짤'] },
   { image: 'images/쌀숭이.jpg', label: '쌀숭이', cat: 'img', tags: ['짤'] },
   { video: 'images/쌀숭이 템플런.mp4', label: '쌀숭이 템플런', cat: 'video', tags: ['MEME'] },
   { image: 'images/씨 발 년.png', label: '씨 발 년', cat: 'img', tags: ['이모티콘'] },
@@ -117,6 +121,7 @@ var pads = [
   { image: 'images/아!루1.jpg', label: '아!루1', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/아!루2.jpg', label: '아!루2', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/아냐 잘못본건가.jpg', label: '아냐 잘못본건가', cat: 'img', tags: ['짤'] },
+  { image: 'images/아직 안터짐.jpg', label: '아직 안터짐', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/알고리즘.jpg', label: '알고리즘', cat: 'img', tags: ['짤'] },
   { image: 'images/앙카 따봉.png', label: '앙카 따봉', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/앙카 뻐큐.jpg', label: '앙카 Fuckyou', cat: 'img', tags: ['이모티콘'] },
@@ -135,9 +140,11 @@ var pads = [
   { image: 'images/우매함의 봉우리.jpg', label: '우매함의 봉우리', cat: 'img', tags: ['짤', 'MEME'] },
   { image: 'images/유어웰컴.jpg', label: '유어웰컴', cat: 'img', tags: ['짤'] },
   { image: 'images/유치원생 애호가.jpg', label: '유치원생 애호가', cat: 'img', tags: ['MEME'] },
+  { image: 'images/이건 제대로 된 암컷이다!.png', label: '이건 제대로 된 암컷이다!', cat: 'img', tags: ['짤'] },
   { image: 'images/이게 든쳤나.png', label: '이게 든쳤나', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/이리123.webp', label: '이리 123', cat: 'img', tags: ['MEME'] },
   { image: 'images/이리로 들어오도록.jpg', label: '이리로 들어오도록', cat: 'img', tags: ['짤'] },
+  { image: 'images/이리하고싶은데.png', label: '이리하고싶은데', cat: 'img', tags: ['짤', 'MEME'] },
   { image: 'images/이새끼 웃는데요.jpg', label: '이새끼 웃는데요?', cat: 'img', tags: ['짤'] },
   { image: 'images/이재명 840명.jpg', label: '이재명 840명', cat: 'img', tags: ['MEME', '정치'] },
   { image: 'images/이제는 더이상 물러날 곳이 없다.jpg', label: '이제는 더이상', cat: 'img', tags: ['짤'] },
@@ -145,7 +152,9 @@ var pads = [
   { image: 'images/인피니티 선글라스.gif', label: '인피니티 선글라스', cat: 'gif', tags: ['짤'] },
 
   // [ㅈ]
+  { image: 'images/잔상입니다만.gif', label: '잔상입니다만', cat: 'gif', tags: ['짤'] },
   { image: 'images/장학금 면제.jpg', label: '장학금 면제', cat: 'img', tags: ['MEME'] },
+  { image: 'images/정말 통쾌했어요(듀오).png', label: '정말 통쾌했어요(듀오)', cat: 'img', tags: ['짤'] },
   { image: 'images/정상수.jpg', label: '정상수', cat: 'img', tags: ['MEME'] },
   { image: 'images/조아해요.png', label: '조아해요', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/죽을께.png', label: '죽을께', cat: 'img', tags: ['이모티콘'] },
@@ -159,6 +168,7 @@ var pads = [
 
   // [ㅊ]
   { video: 'images/펠린소맨.mp4', label: '체인소 펠리카', cat: 'video', tags: ['MEME'] },
+  { video: 'images/총알 쳐내기.mp4', label: '총알 쳐내기', cat: 'video', tags: ['MEME'] },
   { image: 'images/최선을 다한다.jpg', label: '최선을 다한다', cat: 'img', tags: ['짤'] },
 
   // [ㅋ]
@@ -187,6 +197,7 @@ var pads = [
   { image: 'images/한가위 괴렘.png', label: '한가위 괴렘', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/한가위 도황.jpg', label: '한가위 도황', cat: 'img', tags: ['짤'] },
   { image: 'images/한잔해.webp', label: '한잔해', cat: 'img', tags: ['짤'] },
+  { image: 'images/해피이터리.jpg', label: '해피이터리', cat: 'img', tags: ['짤'] },
   { image: 'images/행복하다면 OK.jpg', label: '행복하다면 OK', cat: 'img', tags: ['짤'] },
   { image: 'images/헤.jpg', label: '헤', cat: 'img', tags: ['짤'] },
   { image: 'images/호에에 합창단.jpg', label: '호에에에', cat: 'img', tags: ['짤'] },
