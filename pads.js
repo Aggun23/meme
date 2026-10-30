@@ -197,7 +197,7 @@ var pads = [
   { image: 'images/한가위 괴렘.png', label: '한가위 괴렘', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/한가위 도황.jpg', label: '한가위 도황', cat: 'img', tags: ['짤'] },
   { image: 'images/한잔해.webp', label: '한잔해', cat: 'img', tags: ['짤'] },
-  { image: 'images/해피이터리.jpg', label: '해피이터리', cat: 'img', tags: ['짤'] },
+  { image: 'images/해피이터리.jpg', label: '해피이터리', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/행복하다면 OK.jpg', label: '행복하다면 OK', cat: 'img', tags: ['짤'] },
   { image: 'images/헤.jpg', label: '헤', cat: 'img', tags: ['짤'] },
   { image: 'images/호에에 합창단.jpg', label: '호에에에', cat: 'img', tags: ['짤'] },
