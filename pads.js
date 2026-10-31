@@ -7,6 +7,7 @@ var catName = {
 var typeList = ['이모티콘', '짤', 'MEME'];
 var extraTagList = ['정치', '프렌즈', '슈우로롱'];
 var tagList = ['이모티콘', '짤', 'MEME', '정치', '프렌즈', '슈우로롱'];
+var favList = [];
 
 var pads = [
   // [ㄱ]
