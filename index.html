@@ -369,7 +369,7 @@
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 10px;
-    padding: 22px 12px 12px;
+    padding: 9px 12px 12px;
     text-align: center;
     cursor: pointer;
     box-shadow: 4px 4px 0 rgba(0,0,0,0.35);
@@ -449,9 +449,11 @@
   }
 
   .pad-format-row {
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     display: flex;
     justify-content: center;
+    align-items: center;
+    min-height: 20px;
     width: 100%;
   }
 
@@ -477,9 +479,12 @@
     font-size: 13px;
     font-weight: 600;
     line-height: 1.35;
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
-    margin-bottom: 10px;
+    min-height: 36px;
+    margin-bottom: 8px;
     word-break: keep-all;
     overflow-wrap: break-word;
     text-wrap: balance;
@@ -490,24 +495,34 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    margin-top: auto;
+    min-height: 46px;
+  }
+
+  .pad-meta.no-theme {
+    padding-top: 2px;
   }
 
   .type-group {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    align-items: center;
     gap: 4px;
     width: 100%;
+    min-height: 20px;
   }
 
   .theme-footer {
     width: 100%;
-    margin-top: 8px;
-    padding-top: 8px;
+    margin-top: 6px;
+    padding-top: 6px;
     border-top: 1px solid var(--border);
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    align-items: center;
     gap: 4px;
   }
 
@@ -1497,10 +1512,12 @@
         : '';
 
       metaHtml = `
-        ${typeBadges ? `<div class="type-group">${typeBadges}</div>` : ''}
+        <div class="type-group">${typeBadges}</div>
         ${themeFooterHtml}
       `;
     }
+
+    const metaClass = (!editMode && itemThemes.length === 0) ? 'pad-meta no-theme' : 'pad-meta';
 
     el.innerHTML = `
       <button type="button" class="pad-corner-btn zoom-btn" title="원본 비율 크게 보기 (우클릭 가능)">🔍</button>
@@ -1512,7 +1529,7 @@
         ${visual}
         <span class="label">${p.label}</span>
       </div>
-      <div class="pad-meta">
+      <div class="${metaClass}">
         ${metaHtml}
       </div>
     `;
