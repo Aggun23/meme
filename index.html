@@ -139,6 +139,7 @@
     border-radius: 10px;
     cursor: pointer;
     transition: all .15s;
+    white-space: nowrap;
   }
 
   .btn-edit-mode:hover {
@@ -150,6 +151,52 @@
     background: #ff9f43;
     color: var(--bg);
     border-color: transparent;
+  }
+
+  /* 5. 모바일 화면 헤더 버튼 줄바꿈 및 여백 최적화 */
+  @media (max-width: 640px) {
+    body {
+      padding: 24px 14px 64px;
+    }
+
+    header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: 32px;
+    }
+
+    .header-right {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .search-wrap {
+      grid-column: 1 / -1;
+      width: 100%;
+    }
+
+    #search {
+      width: 100%;
+    }
+
+    .btn-edit-mode {
+      width: 100%;
+      text-align: center;
+      padding: 10px 10px;
+      font-size: 12px;
+    }
+
+    .grid {
+      grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
+      gap: 10px;
+    }
   }
 
   .edit-banner {
@@ -877,6 +924,7 @@
 <div id="toast"></div>
 
 <script>
+  // 1. 174개 전체 최신 데이터셋 기본 내장
   const defaultPadsData = [
     // [ㄱ]
     { image: 'images/가챠 실패(화사).gif', label: '가챠 실패', cat: 'gif', tags: ['짤', 'MEME'] },
@@ -1241,7 +1289,6 @@
       p.tags = sortTagsCanonically(p.tags || []);
     });
 
-    // 1) pads.js 내장 favList 또는 각 항목의 fav: true 속성에서 즐겨찾기 동기화
     if (Array.isArray(window.favList)) {
       window.favList.forEach(k => {
         if (!favorites.includes(k)) favorites.push(k);
@@ -1254,7 +1301,6 @@
       }
     });
 
-    // 2) URL 파라미터(?fav=이름1,이름2)로 전달된 즐겨찾기 동기화
     try {
       const params = new URLSearchParams(location.search);
       const urlFav = params.get('fav');
@@ -1267,7 +1313,6 @@
       }
     } catch (e) {}
 
-    // 3) 최종 합쳐진 즐겨찾기를 각 pad 객체(p.fav)와 localStorage에 반영
     window.pads.forEach(p => {
       p.fav = isFav(p);
     });
@@ -1473,6 +1518,7 @@
 
     const el = document.createElement('div');
     el.className = 'pad' + (fav ? ' is-fav' : '') + (isFirstSearchMatch ? ' first-match' : '');
+    el.dataset.padKey = getPadKey(p);
 
     const mediaSrc = p._previewUrl || p.video || p.image;
     const thumbFallback = `https://placehold.co/96x96/1d2229/f2f1ed?text=${encodeURIComponent(p.label.slice(0, 4))}`;
@@ -1567,19 +1613,45 @@
     }
     el.addEventListener('mouseleave', hidePreview);
 
+    // 6. 태그 편집 시 전체 그리드 재렌더링 대신 부분 업데이트로 스크롤 유지
     if (editMode) {
       el.querySelectorAll('.edit-tag-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
           const t = btn.dataset.t;
           p.tags = p.tags || [];
-          if (p.tags.includes(t)) {
-            p.tags = p.tags.filter(x => x !== t);
-          } else {
+          const willTurnOn = !p.tags.includes(t);
+          if (willTurnOn) {
             p.tags.push(t);
+          } else {
+            p.tags = p.tags.filter(x => x !== t);
           }
           p.tags = sortTagsCanonically(p.tags);
-          render();
+
+          // 만약 현재 특정 분류/태그 필터가 켜져 있어서 해당 카드가 조건에서 제외되어야 할 때만 전체 렌더
+          const stillMatchesFilter =
+            (activeType === 'all' || p.tags.includes(activeType)) &&
+            (activeTheme === 'all' || p.tags.includes(activeTheme));
+
+          if (!stillMatchesFilter) {
+            render();
+            return;
+          }
+
+          // 동일 아이템(즐겨찾기 상단 + 하단 섹션에 동시에 있을 경우)의 버튼 상태만 즉시 동기화
+          const key = getPadKey(p);
+          grid.querySelectorAll('.pad').forEach(cardEl => {
+            if (cardEl.dataset.padKey === key) {
+              cardEl.querySelectorAll('.edit-tag-btn').forEach(b => {
+                if (b.dataset.t === t) {
+                  b.classList.toggle('on', willTurnOn);
+                }
+              });
+            }
+          });
+
+          const q = searchInput.value.trim().toLowerCase();
+          updateCounts(q);
         });
       });
     } else {
@@ -1817,35 +1889,35 @@
     });
   }
 
-  // 텍스트 링크(text/plain)를 절대 넣지 않고 GIF 데이터만 클립보드에 복사
+  // 2. 중복 선언되어 있던 copyRichGifFallback 함수를 하나로 통합 정리
   function copyRichGifFallback(gifSrc, label) {
     const holder = document.createElement('div');
     holder.contentEditable = 'true';
-    holder.style.position = 'fixed';
-    holder.style.left = '-9999px';
-    holder.style.opacity = '0';
-    holder.innerHTML = `<img src="${gifSrc}" alt="${label}">`;
+    holder.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0';
+    const img = document.createElement('img');
+    img.src = gifSrc;
+    img.alt = label;
+    holder.appendChild(img);
     document.body.appendChild(holder);
-
+    const selection = window.getSelection();
     const range = document.createRange();
     range.selectNodeContents(holder);
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
-
-    const listener = (e) => {
-      if (e.clipboardData) {
-        e.clipboardData.setData('text/html', `<img src="${gifSrc}" alt="${label}">`);
-        e.preventDefault();
-      }
+    selection.removeAllRanges();
+    selection.addRange(range);
+    const onCopy = e => {
+      if (!e.clipboardData) return;
+      e.clipboardData.setData('text/html', holder.innerHTML);
+      e.preventDefault();
     };
-    document.addEventListener('copy', listener, { once: true });
-    try {
-      document.execCommand('copy');
-    } catch (e) {}
-    document.removeEventListener('copy', listener);
-    sel.removeAllRanges();
-    holder.remove();
+    document.addEventListener('copy', onCopy);
+    let success = false;
+    try { success = document.execCommand('copy'); }
+    finally {
+      document.removeEventListener('copy', onCopy);
+      selection.removeAllRanges();
+      holder.remove();
+    }
+    return success;
   }
 
   editModeBtn.addEventListener('click', () => {
@@ -1885,38 +1957,6 @@
     } else {
       showToast('이미 있는 태그입니다.');
     }
-  }
-
-  // HTML 이미지로 복사: PNG 프레임/텍스트 URL은 클립보드에 쓰지 않음.
-  // 붙여넣기 대상 앱이 HTML의 GIF 이미지를 지원해야 애니메이션이 유지된다.
-  function copyRichGifFallback(gifSrc, label) {
-    const holder = document.createElement('div');
-    holder.contentEditable = 'true';
-    holder.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0';
-    const img = document.createElement('img');
-    img.src = gifSrc;
-    img.alt = label;
-    holder.appendChild(img);
-    document.body.appendChild(holder);
-    const selection = window.getSelection();
-    const range = document.createRange();
-    range.selectNodeContents(holder);
-    selection.removeAllRanges();
-    selection.addRange(range);
-    const onCopy = e => {
-      if (!e.clipboardData) return;
-      e.clipboardData.setData('text/html', holder.innerHTML);
-      e.preventDefault();
-    };
-    document.addEventListener('copy', onCopy);
-    let success = false;
-    try { success = document.execCommand('copy'); }
-    finally {
-      document.removeEventListener('copy', onCopy);
-      selection.removeAllRanges();
-      holder.remove();
-    }
-    return success;
   }
 
   addTagBtn.addEventListener('click', handleAddNewTag);
@@ -1977,7 +2017,6 @@
 
         showToast(`'${p.label}' 영상 다운로드됨`);
       } else if (isGif && !/^(blob|data):/i.test(targetUrl)) {
-        // GIF 주소(절대 URL)를 복사: 디스코드에 붙여넣으면 움직이는 GIF로 올라가고, 링크만 보내면 주소 글자는 숨겨진다.
         const gifUrl = new URL(targetUrl, location.href).href;
         try {
           await navigator.clipboard.writeText(gifUrl);
@@ -1986,7 +2025,6 @@
         }
         showToast(`'${p.label}' GIF 복사됨 → 디스코드에 Ctrl+V`);
       } else if (isGif) {
-        // 방금 추가해 아직 업로드 전인 GIF(blob 주소)는 링크가 없으므로 HTML 이미지로 복사.
         const response = await fetch(targetUrl);
         const gifBlob = await response.blob();
         const gifDataUrl = await blobToDataUrl(gifBlob);
