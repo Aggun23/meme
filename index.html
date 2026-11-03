@@ -153,7 +153,6 @@
     border-color: transparent;
   }
 
-  /* 모바일 화면 헤더 버튼 줄바꿈 및 여백 최적화 */
   @media (max-width: 640px) {
     body {
       padding: 24px 14px 64px;
@@ -418,12 +417,13 @@
     border-radius: 10px;
     padding: 9px 12px 12px;
     text-align: center;
-    cursor: grab;
+    cursor: pointer;
     box-shadow: 4px 4px 0 rgba(0,0,0,0.35);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
+    user-select: none;
     transition: opacity .15s, transform .12s, border-color .15s;
   }
 
@@ -433,7 +433,6 @@
 
   .pad.dragging {
     opacity: 0.55;
-    cursor: grabbing;
     border-color: var(--gif);
   }
 
@@ -517,9 +516,10 @@
     margin-bottom: 10px;
   }
 
+  /* 썸네일 이미지 자체는 브라우저 기본 이미지 드래그가 100% 작동하도록 설정 */
   .pad-img {
-    width: 56px;
-    height: 56px;
+    width: 64px;
+    height: 64px;
     object-fit: cover;
     border-radius: 8px;
     margin-bottom: 10px;
@@ -529,6 +529,11 @@
     background: #12151a;
     cursor: grab;
     -webkit-user-drag: element;
+    user-select: none;
+  }
+
+  .pad-img:active {
+    cursor: grabbing;
   }
 
   .pad .label {
@@ -771,7 +776,8 @@
     align-items: center;
     gap: 7px;
     white-space: nowrap;
-    cursor: grab;
+    cursor: pointer;
+    user-select: none;
     transition: background .15s, border-color .15s, transform .1s, opacity .15s;
   }
 
@@ -782,7 +788,6 @@
 
   .recent-item.dragging {
     opacity: 0.55;
-    cursor: grabbing;
   }
 
   .recent-item:active {
@@ -790,10 +795,11 @@
   }
 
   .recent-thumb {
-    width: 24px;
-    height: 24px;
+    width: 26px;
+    height: 26px;
     object-fit: cover;
     border-radius: 4px;
+    cursor: grab;
     -webkit-user-drag: element;
   }
 
@@ -874,7 +880,7 @@
   <header>
     <div>
       <h1>짤패드</h1>
-      <p>클릭하면 복사 · 카톡/디코 채팅창으로 드래그하면 원본 파일 바로 전송</p>
+      <p>클릭하면 복사 · <b>썸네일 사진</b>을 잡고 카톡/디코 채팅창으로 드래그하면 원본 파일 전송</p>
     </div>
     <div class="header-right">
       <div class="search-wrap">
@@ -925,7 +931,7 @@
   <div class="grid" id="grid"></div>
 
   <div class="recent-header">
-    <div class="recent-label">최근 사용 (클릭하면 복사 · 채팅창으로 드래그 가능)</div>
+    <div class="recent-label">최근 사용 (클릭하면 복사 · 썸네일 사진을 채팅창으로 드래그 가능)</div>
     <button id="clearRecentBtn" class="recent-clear-btn" type="button">기록 비우기</button>
   </div>
   <div class="recent-row" id="recentRow">
@@ -1225,71 +1231,31 @@
     renderRecent();
   }
 
-  function getMimeAndFileInfo(p) {
-    const rawPath = p.video || p.image || p.label;
-    const rawFileName = rawPath.split('/').pop();
-    const ext = rawFileName.includes('.') ? rawFileName.split('.').pop().toLowerCase() : '';
-    let mime = 'image/png';
-    if (ext === 'gif' || getCat(p) === 'gif') mime = 'image/gif';
-    else if (ext === 'jpg' || ext === 'jpeg') mime = 'image/jpeg';
-    else if (ext === 'webp') mime = 'image/webp';
-    else if (ext === 'mp4' || getCat(p) === 'video') mime = 'video/mp4';
-    else if (ext === 'webm') mime = 'video/webm';
+  // 핵심: <img>의 브라우저 네이티브 이미지 드래그를 건드리지 않고 그대로 살려두어야
+  // 디스코드·카카오톡·바탕화면으로 드래그할 때 OS 레벨의 실제 이미지 파일(CF_HDROP)로 전달됩니다.
+  function attachNativeMediaDrag(containerEl, mediaEl, p) {
+    // 부모 카드(div)는 draggable을 끄고, 안쪽의 <img>만 네이티브 드래그가 작동하게 함
+    containerEl.removeAttribute('draggable');
+    if (!mediaEl) return;
 
-    const hasExt = /\.[a-z0-9]{2,4}$/i.test(rawFileName);
-    const defaultExt = mime === 'image/gif' ? '.gif' : mime === 'video/mp4' ? '.mp4' : '.png';
-    const fileName = hasExt ? rawFileName : (rawFileName + defaultExt);
-    return { mime, fileName };
-  }
+    mediaEl.setAttribute('draggable', 'true');
 
-  // 카카오톡·디스코드 등 외부 메신저 채팅창으로 바로 드래그 앤 드롭 전송 지원
-  function attachExternalDrag(containerEl, thumbEl, p) {
-    containerEl.setAttribute('draggable', 'true');
-    if (thumbEl) {
-      thumbEl.setAttribute('draggable', 'true');
-    }
-
-    const onDragStart = (e) => {
+    mediaEl.addEventListener('dragstart', (e) => {
       if (editMode) {
         e.preventDefault();
         return;
       }
       hidePreview();
       containerEl.classList.add('dragging');
-
-      const targetUrl = p._previewUrl || p.video || p.image;
-      if (!targetUrl || !e.dataTransfer) return;
-
-      const absUrl = new URL(targetUrl, location.href).href;
-      const { mime, fileName } = getMimeAndFileInfo(p);
-      const safeFileName = fileName.replace(/:/g, '_');
-
-      e.dataTransfer.effectAllowed = 'copy';
-
-      try {
-        // 크롬·엣지·웨일에서 카카오톡/바탕화면/메신저로 드래그 시 실제 원본 파일(.gif 등)로 전달
-        e.dataTransfer.setData('DownloadURL', `${mime}:${safeFileName}:${absUrl}`);
-      } catch (err) {}
-
-      try {
-        e.dataTransfer.setData('text/uri-list', absUrl);
-        e.dataTransfer.setData('text/plain', absUrl);
-        e.dataTransfer.setData('text/html', `<img src="${absUrl}" alt="${p.label}">`);
-      } catch (err) {}
-
-      if (thumbEl && e.dataTransfer.setDragImage) {
-        e.dataTransfer.setDragImage(thumbEl, thumbEl.clientWidth / 2 || 28, thumbEl.clientHeight / 2 || 28);
-      }
-
+      // 주의: 여기서 e.dataTransfer.setData('text/plain', ...)를 호출하면
+      // 브라우저의 기본 이미지 파일 드래그 페이로드가 취소되고 단순 텍스트 링크로 바뀝니다!
+      // 따라서 image(<img>)는 dataTransfer를 일절 수정하지 않고 브라우저 기본 동작에 맡깁니다.
       recordRecentUse(p);
-    };
+    });
 
-    const onDragEnd = () => {
+    mediaEl.addEventListener('dragend', () => {
       containerEl.classList.remove('dragging');
-    };
-
-    containerEl.addEventListener('dragstart', onDragStart);
-    containerEl.addEventListener('dragend', onDragEnd);
+    });
   }
 
   function syncFavToUrlQuietly() {
@@ -1611,14 +1577,14 @@
     const el = document.createElement('div');
     el.className = 'pad' + (fav ? ' is-fav' : '') + (isFirstSearchMatch ? ' first-match' : '');
     el.dataset.padKey = getPadKey(p);
-    el.title = '클릭: 복사 / 드래그: 카톡·디코 채팅창에 바로 놓기';
+    el.title = '클릭: 복사 / 가운데 썸네일 이미지를 잡고 채팅창으로 드래그: 파일 바로 전송';
 
     const mediaSrc = p._previewUrl || p.video || p.image;
     const thumbFallback = `https://placehold.co/96x96/1d2229/f2f1ed?text=${encodeURIComponent(p.label.slice(0, 4))}`;
     const visual = p.video
       ? `<video class="pad-img" src="${mediaSrc}" muted loop playsinline></video>`
       : p.image
-      ? `<img class="pad-img" src="${mediaSrc}" alt="${p.label}" loading="lazy" onerror="this.onerror=null;this.src='${thumbFallback}';">`
+      ? `<img class="pad-img" src="${mediaSrc}" alt="${p.label}" draggable="true" onerror="this.onerror=null;this.src='${thumbFallback}';">`
       : `<span class="emoji">${p.emoji || '🖼️'}</span>`;
 
     let metaHtml = '';
@@ -1706,10 +1672,9 @@
     }
     el.addEventListener('mouseleave', hidePreview);
 
-    // 카톡·디스코드 등 외부 채팅창 드래그 앤 드롭 연결
-    attachExternalDrag(el, thumbEl, p);
+    // 썸네일 이미지 네이티브 드래그 연결
+    attachNativeMediaDrag(el, thumbEl, p);
 
-    // 태그 편집 시 전체 그리드 재렌더링 대신 부분 업데이트로 스크롤 유지
     if (editMode) {
       el.querySelectorAll('.edit-tag-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -2116,7 +2081,7 @@
         } catch (e) {
           copyTextSafe(gifUrl);
         }
-        showToast(`'${p.label}' GIF 복사됨 (디코 Ctrl+V / 카톡은 카드 드래그)`);
+        showToast(`'${p.label}' GIF 복사됨 (디코 Ctrl+V / 카톡은 썸네일 사진 드래그)`);
       } else if (isGif) {
         const response = await fetch(targetUrl);
         const gifBlob = await response.blob();
@@ -2179,17 +2144,17 @@
     recent.forEach(p => {
       const item = document.createElement('div');
       item.className = 'recent-item';
-      item.title = '클릭: 다시 복사 / 드래그: 카톡·디코 채팅창에 바로 놓기';
+      item.title = '클릭: 다시 복사 / 썸네일 사진 드래그: 채팅창에 바로 놓기';
 
       const thumbSrc = p._previewUrl || p.image;
       const thumbFallback = `https://placehold.co/48x48/1d2229/f2f1ed?text=${encodeURIComponent(p.label.slice(0, 2))}`;
       const visual = thumbSrc
-        ? `<img class="recent-thumb" src="${thumbSrc}" alt="${p.label}" onerror="this.onerror=null;this.src='${thumbFallback}';">`
+        ? `<img class="recent-thumb" src="${thumbSrc}" alt="${p.label}" draggable="true" onerror="this.onerror=null;this.src='${thumbFallback}';">`
         : (p.emoji || '🎬');
 
       item.innerHTML = `${visual} <span>${p.label}</span>`;
       const thumbEl = item.querySelector('.recent-thumb');
-      attachExternalDrag(item, thumbEl, p);
+      attachNativeMediaDrag(item, thumbEl, p);
       item.addEventListener('click', () => fire(p, item));
       recentRow.appendChild(item);
     });
