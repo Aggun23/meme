@@ -7,7 +7,7 @@ var catName = {
 var typeList = ['이모티콘', '짤', 'MEME'];
 var extraTagList = ['정치', '프렌즈', '슈우로롱'];
 var tagList = ['이모티콘', '짤', 'MEME', '정치', '프렌즈', '슈우로롱'];
-var favList = [];
+var favList = ['images/개엔밍.webp', 'images/날 죽여라.jpg', 'images/매튜렁.webp', 'images/빤.png', 'images/한잔해.webp'];
 
 var pads = [
   // [ㄱ]
@@ -15,7 +15,7 @@ var pads = [
   { image: 'images/갈!!.jpg', label: '갈!!!!', cat: 'img', tags: ['짤'] },
   { image: 'images/개덜덜.gif', label: '개덜덜', cat: 'gif', tags: ['짤'] },
   { image: 'images/개발자 테크트리.jpg', label: '개발자 테크트리', cat: 'img', tags: ['MEME'] },
-  { image: 'images/개엔밍.webp', label: '개엔밍', cat: 'img', tags: ['이모티콘'] },
+  { image: 'images/개엔밍.webp', label: '개엔밍', cat: 'img', tags: ['이모티콘'], fav: true },
   { image: 'images/건강한 게임.png', label: '건강한 게임', cat: 'img', tags: ['짤'] },
   { image: 'images/건강한 게임2.png', label: '건강한 게임2', cat: 'img', tags: ['짤'] },
   { image: 'images/건메 패드립1.jpg', label: '건메 패드립1', cat: 'img', tags: ['MEME', '프렌즈'] },
@@ -34,6 +34,7 @@ var pads = [
   { image: 'images/그럼 꺼져.jpg', label: '그럼 꺼져', cat: 'img', tags: ['짤'] },
   { image: 'images/그리고 아무도 없었다.jpg', label: '그리고 아무도 없었다', cat: 'img', tags: ['짤', 'MEME'] },
   { image: 'images/긴급상황.jpg', label: '긴급상황', cat: 'img', tags: ['짤'] },
+  { image: 'images/꾸꾸당당.png', label: '꾸꾸당당', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/끔찍한 최후다요.png', label: '끔찍한 최후다요', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/끝났다.webp', label: '끝났다', cat: 'img', tags: ['짤'] },
 
@@ -41,7 +42,7 @@ var pads = [
   { image: 'images/나를 위해, 이재명.jpg', label: '나를 위해, 이재명', cat: 'img', tags: ['MEME', '정치'] },
   { image: 'images/나쁜 답변 좋은 답변.webp', label: '나쁜 답변 좋은 답변', cat: 'img', tags: ['짤', 'MEME'] },
   { image: 'images/나쁜아이.png', label: '나쁜아이는 드럼통에', cat: 'img', tags: ['이모티콘', '정치'] },
-  { image: 'images/날 죽여라.jpg', label: '날 죽여라', cat: 'img', tags: ['짤'] },
+  { image: 'images/날 죽여라.jpg', label: '날 죽여라', cat: 'img', tags: ['짤'], fav: true },
   { image: 'images/남자도 여자처럼 다루면.webp', label: '남자도 여자처럼 다루면', cat: 'img', tags: ['MEME'] },
   { image: 'images/내면의 괴렘.gif', label: '내면의 괴렘', cat: 'gif', tags: ['이모티콘'] },
   { image: 'images/내입에내입에.webp', label: '내입에내입에', cat: 'img', tags: ['이모티콘'] },
@@ -83,7 +84,7 @@ var pads = [
   // [ㅁ]
   { image: 'images/마음속에 매장.jpg', label: '마음속에 매장', cat: 'img', tags: ['MEME'] },
   { image: 'images/맛만 좋으면 그만.webp', label: '맛만 좋으면 그만', cat: 'img', tags: ['짤', 'MEME'] },
-  { image: 'images/매튜렁.webp', label: '매튜렁', cat: 'img', tags: ['짤'] },
+  { image: 'images/매튜렁.webp', label: '매튜렁', cat: 'img', tags: ['짤'], fav: true },
   { image: 'images/메숭이 이부키.png', label: '메숭이 이부키', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/메스냥이.jpg', label: '메스냥이', cat: 'img', tags: ['짤'] },
   { image: 'images/메이플 중독증.jpg', label: '메이플 중독', cat: 'img', tags: ['MEME'] },
@@ -96,7 +97,7 @@ var pads = [
   { image: 'images/범인은 현장에 나타난다.jpg', label: '범인은 현장에 나타난다', cat: 'img', tags: ['짤', 'MEME'] },
   { image: 'images/변명 컷.jpg', label: '변명 컷', cat: 'img', tags: ['짤'] },
   { image: 'images/분노괴렘.png', label: '분노괴렘', cat: 'img', tags: ['이모티콘'] },
-  { image: 'images/빤.png', label: '빤-', cat: 'img', tags: ['이모티콘', '정치'] },
+  { image: 'images/빤.png', label: '빤-', cat: 'img', tags: ['이모티콘', '정치'], fav: true },
   { image: 'images/빨보추천.png', label: '빨보추천', cat: 'img', tags: ['이모티콘'] },
 
   // [ㅅ]
@@ -186,6 +187,7 @@ var pads = [
   { image: 'images/테이잉.webp', label: '테이잉', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/텐가로봇.gif', label: '텐가로봇', cat: 'gif', tags: ['MEME'] },
   { image: 'images/퇴근하고 싶다.jpg', label: '퇴근하고 싶다', cat: 'img', tags: ['짤'] },
+  { image: 'images/티~원.gif', label: '티~원', cat: 'gif', tags: ['짤'] },
   { image: 'images/티모따봉.jpg', label: '티모따봉', cat: 'img', tags: ['이모티콘'] },
 
   // [ㅍ]
@@ -197,7 +199,7 @@ var pads = [
   { image: 'images/하셔야합니다 실타.jpg', label: '하셔야합니다 실타', cat: 'img', tags: ['짤'] },
   { image: 'images/한가위 괴렘.png', label: '한가위 괴렘', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/한가위 도황.jpg', label: '한가위 도황', cat: 'img', tags: ['짤'] },
-  { image: 'images/한잔해.webp', label: '한잔해', cat: 'img', tags: ['짤'] },
+  { image: 'images/한잔해.webp', label: '한잔해', cat: 'img', tags: ['짤'], fav: true },
   { image: 'images/해피이터리.jpg', label: '해피이터리', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/행복하다면 OK.jpg', label: '행복하다면 OK', cat: 'img', tags: ['짤'] },
   { image: 'images/헤.jpg', label: '헤', cat: 'img', tags: ['짤'] },
