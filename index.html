@@ -289,21 +289,82 @@
   .pad-format-row { margin-bottom: 6px; display: flex; justify-content: center; align-items: center; min-height: 20px; width: 100%; }
   .pad .emoji { font-size: 30px; display: block; margin-bottom: 10px; }
 
+  /* 썸네일 + 우측 신호등 도트 래퍼 */
+  .thumb-area {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
   .pad-img {
     width: 64px;
     height: 64px;
     object-fit: cover;
     border-radius: 8px;
-    margin-bottom: 10px;
+    margin: 0 auto;
     display: block;
-    margin-left: auto;
-    margin-right: auto;
     background: #12151a;
     cursor: grab;
     -webkit-user-drag: element;
     user-select: none;
   }
   .pad-img:active { cursor: grabbing; }
+
+  /* 사진 오른쪽 여백과 카드 박스 테두리 사이의 신호등 도트 */
+  .traffic-dots {
+    position: absolute;
+    right: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 4;
+  }
+
+  .t-dot {
+    position: relative;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--tag-extra);
+    box-shadow: 0 0 6px rgba(255, 121, 63, 0.65);
+    border: 1.5px solid rgba(20, 23, 28, 0.85);
+    transition: transform .14s ease;
+    cursor: pointer;
+  }
+  .t-dot:hover { transform: scale(1.35); z-index: 10; }
+  .t-dot[data-t="정치"] { background: var(--tag-pol); box-shadow: 0 0 6px rgba(254, 211, 48, 0.7); }
+  .t-dot[data-t="프렌즈"] { background: var(--tag-friends); box-shadow: 0 0 6px rgba(69, 170, 242, 0.7); }
+  .t-dot[data-t="슈우로롱"] { background: var(--tag-shurorong); box-shadow: 0 0 6px rgba(255, 107, 129, 0.7); }
+
+  /* 신호등 점 호버 시 왼쪽으로 뜨는 미니 캡슐 툴팁 */
+  .t-dot::after {
+    content: '#' attr(data-t);
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%) translateX(4px);
+    background: #14171c;
+    color: var(--text);
+    border: 1px solid #3c4657;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 5px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .14s ease, transform .14s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.45);
+  }
+  .t-dot:hover::after {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
 
   .pad .label {
     font-size: 13px;
@@ -314,7 +375,7 @@
     justify-content: center;
     width: 100%;
     min-height: 36px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     word-break: keep-all;
     overflow-wrap: break-word;
     text-wrap: balance;
@@ -327,9 +388,53 @@
     align-items: center;
     justify-content: center;
     margin-top: auto;
-    min-height: 46px;
   }
-  .pad-meta.no-theme { padding-top: 2px; }
+
+  /* 하단 접기/펼치기 슬림 토글 버튼 */
+  .drawer-toggle-btn {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 6px;
+    padding: 4px 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    color: var(--text-dim);
+    font-size: 10px;
+    font-weight: 600;
+    transition: background .15s, border-color .15s, color .15s;
+  }
+  .drawer-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #3d4654;
+    color: var(--text);
+  }
+  .drawer-toggle-btn .arrow {
+    font-size: 9px;
+    opacity: 0.75;
+    transition: transform .18s ease;
+  }
+  .pad-meta.open .drawer-toggle-btn .arrow {
+    transform: rotate(180deg);
+  }
+
+  /* 펼쳐졌을 때 나타나는 상세 서랍 영역 */
+  .tag-drawer {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 7px;
+    margin-top: 5px;
+    border-top: 1px dashed var(--border);
+  }
+  .pad-meta.open .tag-drawer,
+  .pad-meta.edit-open .tag-drawer {
+    display: flex;
+  }
 
   .type-group {
     display: flex;
@@ -559,598 +664,43 @@
   const STORAGE_RECENT_KEY = 'jjalpad_recent_v1';
   const CHOSUNG = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
 
-  window.catName = window.catName || { img: '이미지', gif: 'GIF', video: '영상' };
-  window.pads = Array.isArray(window.pads) ? window.pads : [];
-
-  let favorites = [];
-  let recent = [];
-  let currentTypeList = ['이모티콘', '짤', 'MEME'];
-  let currentThemeList = ['정치', '프렌즈', '슈우로롱'];
-  let activeCat = 'all', activeType = 'all', activeTheme = 'all';
-  let editMode = false, currentFilteredList = [], hoverTimer = null;
-
-  const getPadKey = p => p.video || p.image || p.label;
-  const getCat = p => p.cat || (p.video ? 'video' : (p.image && p.image.toLowerCase().endsWith('.gif') ? 'gif' : 'img'));
-  const isFav = p => Boolean(p.fav) || favorites.includes(getPadKey(p)) || favorites.includes(p.label);
-  const getMasterOrder = () => [...currentTypeList, ...currentThemeList];
-
-  function sortTagsCanonically(tagsArr = []) {
-    const order = getMasterOrder();
-    return [...new Set(tagsArr)].sort((a, b) => {
-      const ia = order.indexOf(a), ib = order.indexOf(b);
-      return (ia === -1 && ib === -1) ? a.localeCompare(b, 'ko') : (ia === -1 ? 1 : (ib === -1 ? -1 : ia - ib));
-    });
-  }
-
-  function extractChosung(str) {
-    return Array.from(str).map(ch => {
-      const code = ch.charCodeAt(0);
-      return (code >= 0xAC00 && code <= 0xD7A3) ? CHOSUNG[Math.floor((code - 0xAC00) / 588)] : ch;
-    }).join('');
-  }
-
-  function showToast(msg) {
-    toast.textContent = msg;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 1400);
-  }
-
-  function copyTextSafe(text) {
-    const ta = Object.assign(document.createElement('textarea'), { value: text });
-    ta.style.cssText = 'position:fixed;opacity:0';
-    document.body.appendChild(ta);
-    ta.select();
-    try { document.execCommand('copy'); } catch (e) {}
-    ta.remove();
-  }
-
-  function normalizePadsAndTags() {
-    try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_FAV_KEY) || '[]');
-      if (Array.isArray(saved)) favorites = [...new Set([...favorites, ...saved])];
-    } catch (e) {}
-
-    if (Array.isArray(window.typeList)) currentTypeList = [...window.typeList];
-    if (Array.isArray(window.extraTagList)) {
-      currentThemeList = [...new Set(window.extraTagList.map(t => t === '정치인' ? '정치' : t))];
-    }
-    if (!currentThemeList.includes('슈우로롱')) currentThemeList.push('슈우로롱');
-
-    window.pads.forEach(p => {
-      p.tags = sortTagsCanonically((p.tags || []).map(t => t === '밈 사진' ? 'MEME' : (t === '정치인' ? '정치' : t)));
-      p.tags.forEach(t => {
-        if (!currentTypeList.includes(t) && !currentThemeList.includes(t)) currentThemeList.push(t);
-      });
-      if (p.fav && !favorites.includes(getPadKey(p))) favorites.push(getPadKey(p));
-    });
-
-    if (Array.isArray(window.favList)) {
-      window.favList.forEach(k => { if (!favorites.includes(k)) favorites.push(k); });
-    }
-
-    try {
-      const urlFav = new URLSearchParams(location.search).get('fav');
-      if (urlFav) {
-        urlFav.split(',').map(s => s.trim()).filter(Boolean).forEach(token => {
-          const found = window.pads.find(p => p.label === token || getPadKey(p) === token);
-          const key = found ? getPadKey(found) : token;
-          if (!favorites.includes(key)) favorites.push(key);
-        });
-      }
-    } catch (e) {}
-
-    window.pads.forEach(p => { p.fav = isFav(p); });
-    try { localStorage.setItem(STORAGE_FAV_KEY, JSON.stringify(favorites)); } catch (e) {}
-
-    try {
-      const savedRecent = JSON.parse(localStorage.getItem(STORAGE_RECENT_KEY) || '[]');
-      if (Array.isArray(savedRecent)) {
-        recent = savedRecent.map(k => window.pads.find(p => getPadKey(p) === k || p.label === k)).filter(Boolean).slice(0, 8);
-      }
-    } catch (e) {}
-  }
-
-  function syncFavToUrlQuietly() {
-    try {
-      const url = new URL(location.href);
-      const favLabels = window.pads.filter(isFav).map(p => p.label);
-      favLabels.length ? url.searchParams.set('fav', favLabels.join(',')) : url.searchParams.delete('fav');
-      history.replaceState(null, '', url.toString());
-    } catch (e) {}
-  }
-
-  function toggleFav(p) {
-    const key = getPadKey(p);
-    if (isFav(p)) {
-      p.fav = false;
-      favorites = favorites.filter(k => k !== key && k !== p.label);
-      showToast(`'${p.label}' 즐겨찾기 해제`);
-    } else {
-      p.fav = true;
-      if (!favorites.includes(key)) favorites.push(key);
-      showToast(`⭐ '${p.label}' 즐겨찾기 추가! (영구 동기화하려면 편집 모드에서 pads.js 저장)`);
-    }
-    try { localStorage.setItem(STORAGE_FAV_KEY, JSON.stringify(favorites)); } catch (e) {}
-    syncFavToUrlQuietly();
-    render();
-  }
-
-  function recordRecentUse(p) {
-    recent = [p, ...recent.filter(r => getPadKey(r) !== getPadKey(p))].slice(0, 8);
-    try { localStorage.setItem(STORAGE_RECENT_KEY, JSON.stringify(recent.map(getPadKey))); } catch (e) {}
-    renderRecent();
-  }
-
-  function attachNativeMediaDrag(containerEl, mediaEl, p) {
-    containerEl.removeAttribute('draggable');
-    if (!mediaEl) return;
-    mediaEl.setAttribute('draggable', 'true');
-    mediaEl.addEventListener('dragstart', e => {
-      if (editMode) return e.preventDefault();
-      hidePreview();
-      containerEl.classList.add('dragging');
-      recordRecentUse(p);
-    });
-    mediaEl.addEventListener('dragend', () => containerEl.classList.remove('dragging'));
-  }
-
-  function matchesSearch(p, q) {
-    if (!q) return true;
-    const cleanQ = q.replace(/^[+#@]+/, '').toLowerCase();
-    if (!cleanQ) return true;
-    const qNoSpace = cleanQ.replace(/\s+/g, '');
-    const matchStr = str => {
-      const lower = str.toLowerCase(), noSpace = lower.replace(/\s+/g, ''), cho = extractChosung(lower);
-      return lower.includes(cleanQ) || noSpace.includes(qNoSpace) || cho.includes(cleanQ) || cho.replace(/\s+/g, '').includes(qNoSpace);
-    };
-    return matchStr(p.label) || (p.tags || []).some(matchStr);
-  }
-
-  const matchesCatFilter = (p, c) => c === 'all' ? true : (c === 'fav' ? isFav(p) : getCat(p) === c);
-
-  function renderChipRow(container, label, list, activeVal, dataAttr, prefix, onSelect) {
-    container.innerHTML = `<span class="row-label">${label}</span>` + ['all', ...list].map(t => `
-      <div class="chip ${activeVal === t ? 'active' : ''}" data-${dataAttr}="${t}">
-        ${t === 'all' ? '전체' : prefix + t} <span class="count" id="cnt-${dataAttr}-${t}"></span>
-      </div>
-    `).join('');
-    container.querySelectorAll('.chip').forEach(chip => {
-      chip.addEventListener('click', () => onSelect(chip.dataset[dataAttr]));
-    });
-  }
-
-  function buildFilterChips() {
-    renderChipRow(typeChipsContainer, '분류', currentTypeList, activeType, 'type', '+', val => {
-      activeType = val; buildFilterChips(); render();
-    });
-    renderChipRow(themeChipsContainer, '태그', currentThemeList, activeTheme, 'theme', '#', val => {
-      activeTheme = val; buildFilterChips(); render();
-    });
-  }
-
-  function updateCounts(q) {
-    const check = (p, c, t, th) => {
-      const tags = p.tags || [];
-      return matchesCatFilter(p, c) && (t === 'all' || tags.includes(t)) && (th === 'all' || tags.includes(th)) && matchesSearch(p, q);
-    };
-    ['all', 'fav', 'img', 'gif', 'video'].forEach(c => {
-      const el = $(`cnt-cat-${c}`);
-      if (el) el.textContent = window.pads.filter(p => check(p, c, activeType, activeTheme)).length;
-    });
-    ['all', ...currentTypeList].forEach(t => {
-      const el = $(`cnt-type-${t}`);
-      if (el) el.textContent = window.pads.filter(p => check(p, activeCat, t, activeTheme)).length;
-    });
-    ['all', ...currentThemeList].forEach(th => {
-      const el = $(`cnt-theme-${th}`);
-      if (el) el.textContent = window.pads.filter(p => check(p, activeCat, activeType, th)).length;
-    });
-  }
-
-  function showPreview(p, anchorEl) {
-    const src = p._previewUrl || p.video || p.image;
-    if (!src) return;
-    const ph = `https://placehold.co/240x240/1d2229/f2f1ed?text=${encodeURIComponent(p.label)}`;
-    previewPopup.innerHTML = (p.video
-      ? `<video src="${src}" autoplay muted loop playsinline></video>`
-      : `<img src="${src}" alt="${p.label}" onerror="this.onerror=null;this.src='${ph}';">`)
-      + `<div class="preview-caption">${p.label}</div>`;
-    previewPopup.classList.add('show');
-
-    const rect = anchorEl.getBoundingClientRect();
-    const left = Math.min(Math.max(12, rect.left + rect.width / 2 - 170), window.innerWidth - 352);
-    const top = rect.top - 370 < 12 ? rect.bottom + 10 : rect.top - 370;
-    previewPopup.style.left = `${left}px`;
-    previewPopup.style.top = `${top}px`;
-  }
-
-  function hidePreview() {
-    clearTimeout(hoverTimer);
-    hoverTimer = null;
-    previewPopup.classList.remove('show');
-  }
-
-  function createPadElement(p, isFirstSearchMatch) {
-    const pCat = getCat(p), fav = isFav(p);
-    p.tags = sortTagsCanonically(p.tags || []);
-    const itemTypes = p.tags.filter(t => currentTypeList.includes(t));
-    const itemThemes = p.tags.filter(t => currentThemeList.includes(t));
-
-    const el = document.createElement('div');
-    el.className = `pad${fav ? ' is-fav' : ''}${isFirstSearchMatch ? ' first-match' : ''}`;
-    el.dataset.padKey = getPadKey(p);
-    el.title = '클릭: 복사 / 가운데 썸네일 이미지를 잡고 채팅창으로 드래그: 파일 바로 전송';
-
-    const mediaSrc = p._previewUrl || p.video || p.image;
-    const fallback = `https://placehold.co/96x96/1d2229/f2f1ed?text=${encodeURIComponent(p.label.slice(0, 4))}`;
-    const visual = p.video
-      ? `<video class="pad-img" src="${mediaSrc}" muted loop playsinline></video>`
-      : p.image
-      ? `<img class="pad-img" src="${mediaSrc}" alt="${p.label}" draggable="true" onerror="this.onerror=null;this.src='${fallback}';">`
-      : `<span class="emoji">${p.emoji || '🖼️'}</span>`;
-
-    const metaHtml = editMode
-      ? `<div class="type-group">${currentTypeList.map(t => `<button type="button" class="edit-tag-btn ${p.tags.includes(t) ? 'on' : ''}" data-t="${t}">+${t}</button>`).join('')}</div>
-         <div class="theme-footer edit-divider">${currentThemeList.map(t => `<button type="button" class="edit-tag-btn ${p.tags.includes(t) ? 'on' : ''}" data-t="${t}">#${t}</button>`).join('')}</div>`
-      : `<div class="type-group">${itemTypes.map(t => `<span class="tag sub-type" data-t="${t}">+${t}</span>`).join('')}</div>
-         ${itemThemes.length ? `<div class="theme-footer">${itemThemes.map(t => `<span class="tag sub-theme" data-t="${t}">#${t}</span>`).join('')}</div>` : ''}`;
-
-    el.innerHTML = `
-      <button type="button" class="pad-corner-btn zoom-btn" title="원본 비율 크게 보기 (우클릭 가능)">🔍</button>
-      <button type="button" class="pad-corner-btn fav-btn ${fav ? 'active' : ''}" title="즐겨찾기 고정">${fav ? '★' : '☆'}</button>
-      <div class="pad-top">
-        <div class="pad-format-row"><span class="tag ${pCat}">${window.catName[pCat]}</span></div>
-        ${visual}
-        <span class="label">${p.label}</span>
-      </div>
-      <div class="pad-meta${!editMode && !itemThemes.length ? ' no-theme' : ''}">${metaHtml}</div>
-    `;
-
-    el.querySelector('.fav-btn').addEventListener('click', e => { e.stopPropagation(); hidePreview(); toggleFav(p); });
-
-    const zoomBtn = el.querySelector('.zoom-btn');
-    zoomBtn.addEventListener('mouseenter', () => showPreview(p, el));
-    zoomBtn.addEventListener('mouseleave', hidePreview);
-    zoomBtn.addEventListener('click', e => {
-      e.stopPropagation();
-      previewPopup.classList.contains('show') ? hidePreview() : showPreview(p, el);
-    });
-
-    el.addEventListener('contextmenu', e => { e.preventDefault(); showPreview(p, el); });
-    el.addEventListener('mouseleave', hidePreview);
-
-    const thumbEl = el.querySelector('.pad-img');
-    if (thumbEl) {
-      thumbEl.addEventListener('mouseenter', () => { hoverTimer = setTimeout(() => showPreview(p, el), 450); });
-      thumbEl.addEventListener('mouseleave', hidePreview);
-    }
-    attachNativeMediaDrag(el, thumbEl, p);
-
-    if (editMode) {
-      el.querySelectorAll('.edit-tag-btn').forEach(btn => {
-        btn.addEventListener('click', e => {
-          e.stopPropagation();
-          const t = btn.dataset.t, willTurnOn = !p.tags.includes(t);
-          p.tags = sortTagsCanonically(willTurnOn ? [...p.tags, t] : p.tags.filter(x => x !== t));
-          if ((activeType !== 'all' && !p.tags.includes(activeType)) || (activeTheme !== 'all' && !p.tags.includes(activeTheme))) {
-            return render();
-          }
-          const key = getPadKey(p);
-          grid.querySelectorAll(`.pad[data-pad-key="${CSS.escape(key)}"] .edit-tag-btn[data-t="${CSS.escape(t)}"]`)
-              .forEach(b => b.classList.toggle('on', willTurnOn));
-          updateCounts(searchInput.value.trim().toLowerCase());
-        });
-      });
-    } else {
-      el.addEventListener('click', () => { hidePreview(); fire(p, el); });
-    }
-
-    if (p.video) {
-      const video = el.querySelector('video');
-      if (video) {
-        el.addEventListener('mouseenter', () => { video.currentTime = 0; video.play().catch(() => {}); });
-        el.addEventListener('mouseleave', () => { video.pause(); video.currentTime = 0; });
-      }
-    }
-    return el;
-  }
-
-  function render() {
-    const q = searchInput.value.trim().toLowerCase();
-    grid.innerHTML = '';
-    currentFilteredList = [];
-    updateCounts(q);
-
-    const clean = s => s.replace(/^[^가-힣a-zA-Z0-9]+/, '');
-    const compareKo = (a, b) => clean(a.label).localeCompare(clean(b.label), 'ko');
-    const filterBase = p => {
-      const tags = p.tags || [];
-      return (activeType === 'all' || tags.includes(activeType)) && (activeTheme === 'all' || tags.includes(activeTheme)) && matchesSearch(p, q);
-    };
-
-    const appendGroup = (titleText, titleClass, list) => {
-      if (!list.length) return;
-      if (titleText) {
-        const title = document.createElement('div');
-        title.className = `category-title ${titleClass || ''}`.trim();
-        title.textContent = `${titleText} (${list.length})`;
-        grid.appendChild(title);
-      }
-      list.forEach(p => {
-        const isFirst = Boolean(q) && currentFilteredList.length === 0;
-        currentFilteredList.push(p);
-        grid.appendChild(createPadElement(p, isFirst));
-      });
-    };
-
-    if (activeCat === 'fav') {
-      const favs = window.pads.filter(p => isFav(p) && filterBase(p)).sort(compareKo);
-      appendGroup(null, '', favs);
-      if (!favs.length) grid.innerHTML = '<div class="empty-note">즐겨찾기한 짤이 없어요. 각 카드 우측 상단의 ☆ 버튼을 눌러 고정해 보세요!</div>';
-      return;
-    }
-
-    if (activeCat === 'all') {
-      appendGroup('⭐ 즐겨찾기', 'fav-title', window.pads.filter(p => isFav(p) && filterBase(p)).sort(compareKo));
-    }
-
-    (activeCat === 'all' ? ['img', 'gif', 'video'] : [activeCat]).forEach(cat => {
-      const list = window.pads.filter(p => getCat(p) === cat && filterBase(p)).sort(compareKo);
-      appendGroup(activeCat === 'all' ? window.catName[cat] : null, '', list);
-    });
-
-    if (!currentFilteredList.length) {
-      grid.innerHTML = '<div class="empty-note">조건에 맞는 짤이 없어요 😢</div>';
-    }
-  }
-
-  function handleNewFiles(fileList) {
-    if (!fileList || !fileList.length) return;
-    let added = 0;
-    Array.from(fileList).forEach(file => {
-      const ext = file.name.includes('.') ? file.name.split('.').pop().toLowerCase() : '';
-      const baseLabel = file.name.replace(/\.[^/.]+$/, '');
-      const relPath = `images/${file.name}`;
-      if (window.pads.some(p => getPadKey(p) === relPath || p.label === baseLabel)) return;
-
-      const isVid = ext === 'mp4' || ext === 'webm' || (file.type && file.type.startsWith('video/'));
-      const isGif = ext === 'gif' || file.type === 'image/gif';
-      const newPad = isVid
-        ? { video: relPath, label: baseLabel, cat: 'video', tags: ['MEME'] }
-        : { image: relPath, label: baseLabel, cat: isGif ? 'gif' : 'img', tags: ['짤'] };
-      try { newPad._previewUrl = URL.createObjectURL(file); } catch (e) {}
-      window.pads.push(newPad);
-      added++;
-    });
-
-    if (added > 0) {
-      buildFilterChips();
-      render();
-      showToast(`🎉 새 짤 ${added}개 등록됨! 태그를 선택한 뒤 pads.js를 다운로드하세요.`);
-    } else {
-      showToast('이미 등록된 파일이거나 지원하지 않는 형식입니다.');
-    }
-  }
-
-  function generatePadsJsText() {
-    const clean = s => s.replace(/^[^가-힣a-zA-Z0-9]+/, '').trim();
-    const getGroup = label => {
-      const c = clean(label);
-      if (!c) return '기타';
-      const code = c.charCodeAt(0);
-      if (code >= 0xAC00 && code <= 0xD7A3) {
-        const ch = CHOSUNG[Math.floor((code - 0xAC00) / 588)];
-        return ({ 'ㄲ': 'ㄱ', 'ㄸ': 'ㄷ', 'ㅃ': 'ㅂ', 'ㅆ': 'ㅅ', 'ㅉ': 'ㅈ' })[ch] || ch;
-      }
-      return 'A-Z';
-    };
-
-    const sorted = [...window.pads].sort((a, b) => clean(a.label).localeCompare(clean(b.label), 'ko'));
-    const fmtArr = arr => '[' + arr.map(t => `'${t}'`).join(', ') + ']';
-    let out = `var catName = {\n  img: '이미지',\n  gif: 'GIF',\n  video: '영상'\n};\n\n`
-      + `var typeList = ${fmtArr(currentTypeList)};\n`
-      + `var extraTagList = ${fmtArr(currentThemeList)};\n`
-      + `var tagList = ${fmtArr(getMasterOrder())};\n`
-      + `var favList = ${fmtArr(sorted.filter(isFav).map(getPadKey))};\n\nvar pads = [\n`;
-
-    let lastGroup = null;
-    sorted.forEach(p => {
-      const g = getGroup(p.label);
-      if (g !== lastGroup) {
-        if (lastGroup !== null) out += '\n';
-        out += `  // [${g}]\n`;
-        lastGroup = g;
-      }
-      const key = p.video ? 'video' : 'image';
-      const tags = fmtArr(sortTagsCanonically(p.tags || []));
-      out += `  { ${key}: '${p.video || p.image}', label: '${p.label}', cat: '${getCat(p)}', tags: ${tags}${isFav(p) ? ', fav: true' : ''} },\n`;
-    });
-    return out + `];\n`;
-  }
-
-  function copyRichGifFallback(gifSrc, label) {
-    const holder = document.createElement('div');
-    holder.contentEditable = 'true';
-    holder.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0';
-    holder.innerHTML = `<img src="${gifSrc}" alt="${label}">`;
-    document.body.appendChild(holder);
-    const sel = window.getSelection(), range = document.createRange();
-    range.selectNodeContents(holder);
-    sel.removeAllRanges();
-    sel.addRange(range);
-    const onCopy = e => {
-      if (e.clipboardData) { e.clipboardData.setData('text/html', holder.innerHTML); e.preventDefault(); }
-    };
-    document.addEventListener('copy', onCopy);
-    let ok = false;
-    try { ok = document.execCommand('copy'); } finally {
-      document.removeEventListener('copy', onCopy);
-      sel.removeAllRanges();
-      holder.remove();
-    }
-    return ok;
-  }
-
-  async function fire(p, el) {
-    if (el) { el.classList.add('fired'); setTimeout(() => el.classList.remove('fired'), 150); }
-    try {
-      const targetUrl = p._previewUrl || p.video || p.image;
-      const pCat = getCat(p);
-      const isGif = pCat === 'gif' || (targetUrl && /\.gif($|\?)/i.test(targetUrl));
-
-      if (p.video || pCat === 'video') {
-        const a = Object.assign(document.createElement('a'), { href: targetUrl, download: (p.video || p.label).split('/').pop() });
-        document.body.appendChild(a); a.click(); a.remove();
-        showToast(`'${p.label}' 영상 다운로드됨`);
-      } else if (isGif && !/^(blob|data):/i.test(targetUrl)) {
-        const gifUrl = new URL(targetUrl, location.href).href;
-        try { await navigator.clipboard.writeText(gifUrl); } catch (e) { copyTextSafe(gifUrl); }
-        showToast(`'${p.label}' GIF 복사됨 (디코 Ctrl+V / 카톡은 썸네일 사진 드래그)`);
-      } else if (isGif) {
-        const blob = await (await fetch(targetUrl)).blob();
-        const dataUrl = await new Promise((res, rej) => {
-          const r = new FileReader(); r.onloadend = () => res(r.result); r.onerror = rej; r.readAsDataURL(blob);
-        });
-        if (!copyRichGifFallback(dataUrl, p.label)) throw new Error('GIF 클립보드 복사 실패');
-        showToast(`'${p.label}' GIF 복사됨 (업로드 전 파일)`);
-      } else if (p.image) {
-        const bitmap = await createImageBitmap(await (await fetch(targetUrl)).blob());
-        const canvas = Object.assign(document.createElement('canvas'), { width: bitmap.width, height: bitmap.height });
-        canvas.getContext('2d').drawImage(bitmap, 0, 0);
-        const pngBlob = await new Promise(res => canvas.toBlob(res, 'image/png'));
-        await navigator.clipboard.write([new ClipboardItem({ 'image/png': pngBlob })]);
-        showToast(`'${p.label}' 이미지 복사됨 → Ctrl+V`);
-      } else {
-        copyTextSafe(p.emoji || p.label);
-        showToast(`'${p.label}' 복사됨`);
-      }
-    } catch (e) {
-      console.error('복사 실패:', e);
-      if (getCat(p) === 'gif') showToast(`'${p.label}' GIF 복사 실패 (PNG나 주소로 대체하지 않음)`);
-      else { copyTextSafe(p.label); showToast(`'${p.label}' 복사됨`); }
-    }
-    recordRecentUse(p);
-  }
-
-  function renderRecent() {
-    if (!recent.length) {
-      recentRow.innerHTML = '<span class="empty-note">아직 사용한 짤이 없어요</span>';
-      return;
-    }
-    recentRow.innerHTML = '';
-    recent.forEach(p => {
-      const item = document.createElement('div');
-      item.className = 'recent-item';
-      item.title = '클릭: 다시 복사 / 썸네일 사진 드래그: 채팅창에 바로 놓기';
-      const src = p._previewUrl || p.image;
-      const fb = `https://placehold.co/48x48/1d2229/f2f1ed?text=${encodeURIComponent(p.label.slice(0, 2))}`;
-      item.innerHTML = `${src ? `<img class="recent-thumb" src="${src}" alt="${p.label}" draggable="true" onerror="this.onerror=null;this.src='${fb}';">` : (p.emoji || '🎬')} <span>${p.label}</span>`;
-      attachNativeMediaDrag(item, item.querySelector('.recent-thumb'), p);
-      item.addEventListener('click', () => fire(p, item));
-      recentRow.appendChild(item);
-    });
-  }
-
-  // 이벤트 바인딩
-  dropZone.addEventListener('click', () => fileInput.click());
-  fileInput.addEventListener('change', e => { handleNewFiles(e.target.files); fileInput.value = ''; });
-  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
-  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-  dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('dragover'); handleNewFiles(e.dataTransfer.files); });
-
-  editModeBtn.addEventListener('click', () => {
-    editMode = !editMode;
-    editModeBtn.classList.toggle('active', editMode);
-    editBanner.classList.toggle('show', editMode);
-    editModeBtn.textContent = editMode ? '✅ 편집 완료' : '⚙️ 태그 편집';
-    render();
-  });
-
-  $('syncFavBtn').addEventListener('click', async () => {
-    syncFavToUrlQuietly();
-    try { await navigator.clipboard.writeText(location.href); } catch (e) { copyTextSafe(location.href); }
-    showToast('🔗 현재 즐겨찾기가 포함된 링크가 복사되었습니다! 다른 기기에서 열면 바로 동기화됩니다.');
-  });
-
-  const handleAddNewTag = () => {
-    const clean = (newTagInput.value || '').trim().replace(/^[+#@]+/, '');
-    if (!clean) return showToast('추가할 #태그 이름을 입력해 주세요.');
-    if (!currentTypeList.includes(clean) && !currentThemeList.includes(clean)) {
-      currentThemeList.push(clean);
-      newTagInput.value = '';
-      buildFilterChips();
-      render();
-      showToast(`'#${clean}' 태그가 추가되었습니다!`);
-    } else {
-      showToast('이미 있는 태그입니다.');
-    }
-  };
-  $('addTagBtn').addEventListener('click', handleAddNewTag);
-  newTagInput.addEventListener('keydown', e => { if (!e.isComposing && e.key === 'Enter') { e.preventDefault(); handleAddNewTag(); } });
-
-  $('copyPadsBtn').addEventListener('click', async () => {
-    const text = generatePadsJsText();
-    try { await navigator.clipboard.writeText(text); } catch (e) { copyTextSafe(text); }
-    showToast('pads.js 전체 코드가 복사되었습니다! pads.js에 붙여넣으세요.');
-  });
-
-  $('downloadPadsBtn').addEventListener('click', () => {
-    const url = URL.createObjectURL(new Blob([generatePadsJsText()], { type: 'application/javascript;charset=utf-8' }));
-    const a = Object.assign(document.createElement('a'), { href: url, download: 'pads.js' });
-    document.body.appendChild(a); a.click(); a.remove();
-    URL.revokeObjectURL(url);
-    showToast('수정된 pads.js 다운로드 완료!');
-  });
-
-  $('clearRecentBtn').addEventListener('click', () => {
-    recent = [];
-    try { localStorage.removeItem(STORAGE_RECENT_KEY); } catch (e) {}
-    renderRecent();
-    showToast('최근 사용 기록을 비웠습니다.');
-  });
-
-  document.querySelectorAll('#catChips .chip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      document.querySelectorAll('#catChips .chip').forEach(c => c.classList.remove('active'));
-      chip.classList.add('active');
-      activeCat = chip.dataset.cat;
-      render();
-    });
-  });
-
-  searchInput.addEventListener('input', render);
-  searchInput.addEventListener('keydown', e => {
-    if (e.isComposing) return;
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      currentFilteredList.length ? fire(currentFilteredList[0], grid.querySelector('.pad')) : showToast('검색 결과가 없습니다 😢');
-    } else if (e.key === 'Escape') {
-      searchInput.value = '';
-      render();
-    }
-  });
-
-  // 초기 렌더링 및 최신 pads.js 동기화
-  normalizePadsAndTags();
-  buildFilterChips();
-  render();
-  renderRecent();
-
-  fetch('pads.js?v=' + Date.now())
-    .then(res => res.ok ? res.text() : '')
-    .then(code => {
-      const trimmed = (code || '').trim();
-      if (!trimmed || trimmed.startsWith('<') || !trimmed.includes('pads')) return;
-      const loaded = new Function(trimmed + '\nreturn { catName, typeList, extraTagList, tagList, favList, pads };')();
-      if (loaded && Array.isArray(loaded.pads)) {
-        Object.assign(window, loaded);
-        normalizePadsAndTags();
-        buildFilterChips();
-        render();
-        renderRecent();
-      }
-    })
-    .catch(() => {});
-</script>
-</body>
-</html>
+  // Preview 샌드박스 및 단독 실행 환경을 위한 기본 데이터 폴백 (176개 최신 목록)
+  const FALLBACK_PADS = [
+    { image: 'images/가챠 실패(화사).gif', label: '가챠 실패', cat: 'gif', tags: ['짤', 'MEME'] },
+    { image: 'images/갈!!.jpg', label: '갈!!!!', cat: 'img', tags: ['짤'] },
+    { image: 'images/개덜덜.gif', label: '개덜덜', cat: 'gif', tags: ['짤'] },
+    { image: 'images/개발자 테크트리.jpg', label: '개발자 테크트리', cat: 'img', tags: ['MEME'] },
+    { image: 'images/개엔밍.webp', label: '개엔밍', cat: 'img', tags: ['이모티콘'], fav: true },
+    { image: 'images/건강한 게임.png', label: '건강한 게임', cat: 'img', tags: ['짤'] },
+    { image: 'images/건강한 게임2.png', label: '건강한 게임2', cat: 'img', tags: ['짤'] },
+    { image: 'images/건메 패드립1.jpg', label: '건메 패드립1', cat: 'img', tags: ['MEME', '프렌즈'] },
+    { image: 'images/건메 패드립2.jpg', label: '건메 패드립2', cat: 'img', tags: ['MEME', '프렌즈'] },
+    { image: 'images/게이임.png', label: '게이임?', cat: 'img', tags: ['이모티콘'] },
+    { image: 'images/결국 손 나가는.webp', label: '결국 손 나가는', cat: 'img', tags: ['짤'] },
+    { image: 'images/(경악).jpg', label: '(경악)', cat: 'img', tags: ['짤'] },
+    { image: 'images/곰문곰문곰문.jpg', label: '곰문곰문곰문', cat: 'img', tags: ['MEME'] },
+    { image: 'images/공공의적.webp', label: '공공의 적', cat: 'img', tags: ['짤'] },
+    { image: 'images/공부 보이콧.jpg', label: '공부 보이콧', cat: 'img', tags: ['MEME'] },
+    { image: 'images/교수 폭행.webp', label: '교수 폭행', cat: 'img', tags: ['MEME'] },
+    { image: 'images/국맛.jpg', label: '국맛', cat: 'img', tags: ['짤'] },
+    { image: 'images/굿~.jpg', label: '굿~', cat: 'img', tags: ['이모티콘'] },
+    { image: 'images/굿모니에.png', label: '굿모니에', cat: 'img', tags: ['이모티콘'] },
+    { image: 'images/그래서 이제 뭐함.jpg', label: '그래서 이제 뭐함?', cat: 'img', tags: ['짤'] },
+    { image: 'images/그럼 꺼져.jpg', label: '그럼 꺼져', cat: 'img', tags: ['짤'] },
+    { image: 'images/그리고 아무도 없었다.jpg', label: '그리고 아무도 없었다', cat: 'img', tags: ['짤', 'MEME'] },
+    { image: 'images/긴급상황.jpg', label: '긴급상황', cat: 'img', tags: ['짤'] },
+    { image: 'images/꾸꾸당당.png', label: '꾸꾸당당', cat: 'img', tags: ['이모티콘'] },
+    { image: 'images/끔찍한 최후다요.png', label: '끔찍한 최후다요', cat: 'img', tags: ['이모티콘'] },
+    { image: 'images/끝났다.webp', label: '끝났다', cat: 'img', tags: ['짤'] },
+    { image: 'images/나를 위해, 이재명.jpg', label: '나를 위해, 이재명', cat: 'img', tags: ['MEME', '정치'] },
+    { image: 'images/나쁜 답변 좋은 답변.webp', label: '나쁜 답변 좋은 답변', cat: 'img', tags: ['짤', 'MEME'] },
+    { image: 'images/나쁜아이.png', label: '나쁜아이는 드럼통에', cat: 'img', tags: ['이모티콘', '정치'] },
+    { image: 'images/날 죽여라.jpg', label: '날 죽여라', cat: 'img', tags: ['짤'], fav: true },
+    { image: 'images/남자도 여자처럼 다루면.webp', label: '남자도 여자처럼 다루면', cat: 'img', tags: ['MEME'] },
+    { image: 'images/내면의 괴렘.gif', label: '내면의 괴렘', cat: 'gif', tags: ['이모티콘'] },
+    { image: 'images/내입에내입에.webp', label: '내입에내입에', cat: 'img', tags: ['이모티콘'] },
+    { image: 'images/너무 심한 말은 쓰지마.webp', label: '너무 심한 말은 쓰지마', cat: 'img', tags: ['짤'] },
+    { image: 'images/너처럼 눈치빠른 녀석은 싫다니까.jpg', label: '너처럼 눈치 빠른 녀석은', cat: 'img', tags: ['짤'] },
+    { image: 'images/녀석들에게 보여준 걸.jpg', label: '녀석들에게 보여준 걸', cat: 'img', tags: ['짤'] },
+    { image: 'images/농구가 하고 싶어요.jpg', label: '농구가 하고 싶어요', cat: 'img', tags: ['짤'] },
+    { image: 'images/뇌손상.jpg', label: '뇌손상', cat
