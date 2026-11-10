@@ -1,13 +1,6 @@
-var catName = {
-  img: '이미지',
-  gif: 'GIF',
-  video: '영상'
-};
-
-var typeList = ['이모티콘', '짤', 'MEME'];
-var extraTagList = ['정치', '프렌즈', '슈우로롱'];
-var tagList = ['이모티콘', '짤', 'MEME', '정치', '프렌즈', '슈우로롱'];
-var favList = ['images/개엔밍.webp', 'images/날 죽여라.jpg', 'images/매튜렁.webp', 'images/빤.png', 'images/한잔해.webp'];
+// 짤패드 데이터. 편집 모드의 'pads.js 다운로드'로 만든 파일이다.
+var typeList = ['이모티콘', '짤', 'MEME']; // +분류
+var extraTagList = ['정치', '프렌즈', '슈우로롱']; // #태그
 
 var pads = [
   // [ㄱ]
