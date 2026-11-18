@@ -25,13 +25,18 @@
    새 태그에 색을 주려면 여기에 한 줄만 추가하면 된다. (없으면 --tag-extra) */
 [data-t="짤"]       { --tag-color: #2bcbba; }
 [data-t="MEME"]     { --tag-color: #b36bff; }
-[data-t="정치"]     { --tag-color: #fed330; }
-[data-t="프렌즈"]   { --tag-color: #45aaf2; }
-[data-t="슈우로롱"] { --tag-color: #ff6b81; }
-[data-t="이널턴"]     { --tag-color: #ffff00; }
-[data-t="신창섭"]     { --tag-color: #33cc33; }
-[data-t="만화"]   { --tag-color: #66ffff; }
-[data-t="개발자"] { --tag-color: #3366ff; }
+
+/* #태그 (파스텔) */
+[data-t="정치"]     { --tag-color: #dcb8ff; }   /* 보라 */
+[data-t="개발자"]   { --tag-color: #9db8ff; }   /* 파랑 */
+[data-t="이널턴"]   { --tag-color: #ffb48f; }   /* 주황 */
+[data-t="만화"]     { --tag-color: #ffadd6; }   /* 핑크 */
+
+/* @인물 (파스텔) */
+[data-t="프렌즈"]   { --tag-color: #a6e4ff; }   /* 하늘 */
+[data-t="슈우로롱"] { --tag-color: #f2f2f7; }   /* 흰색 */
+[data-t="신창섭"]   { --tag-color: #fff1a0; }   /* 노랑 */
+[data-t="페페"]     { --tag-color: #a8e6a1; }   /* 녹색 */
 
 #catChips [data-value="fav"]   { --tag-color: var(--fav); }
 #catChips [data-value="img"]   { --tag-color: var(--img); }
@@ -309,10 +314,9 @@ header p { margin: 0; color: var(--text-dim); font-size: 14px; }
 }
 .pad-img:active { cursor: grabbing; }
 
-/* 신호등 도트: 썸네일 오른쪽에 #태그마다 하나씩 */
+/* 신호등 도트: 썸네일 오른쪽에 #태그, 왼쪽에 @인물마다 하나씩 */
 .traffic-dots {
   position: absolute;
-  right: 2px;
   top: 50%;
   transform: translateY(-50%);
   display: flex;
@@ -320,6 +324,8 @@ header p { margin: 0; color: var(--text-dim); font-size: 14px; }
   gap: 6px;
   z-index: 4;
 }
+.traffic-dots.right { right: 2px; }
+.traffic-dots.left { left: 2px; }
 
 .t-dot {
   --c: var(--tag-color, var(--tag-extra));
@@ -335,9 +341,9 @@ header p { margin: 0; color: var(--text-dim); font-size: 14px; }
 }
 .t-dot:hover { transform: scale(1.35); z-index: 10; }
 
-/* 도트에 마우스를 올리면 왼쪽에 뜨는 태그 이름 */
+/* 도트에 마우스를 올리면 사진 쪽으로 뜨는 태그 이름 */
 .t-dot::after {
-  content: '#' attr(data-t);
+  content: attr(data-name);
   position: absolute;
   right: 15px;
   top: 50%;
@@ -359,6 +365,12 @@ header p { margin: 0; color: var(--text-dim); font-size: 14px; }
   opacity: 1;
   transform: translateY(-50%) translateX(0);
 }
+.traffic-dots.left .t-dot::after {
+  right: auto;
+  left: 15px;
+  transform: translateY(-50%) translateX(-4px);
+}
+.traffic-dots.left .t-dot:hover::after { transform: translateY(-50%) translateX(0); }
 
 .pad .label {
   font-size: 13px;
@@ -455,6 +467,9 @@ header p { margin: 0; color: var(--text-dim); font-size: 14px; }
   gap: 4px;
 }
 .theme-footer.flat { margin-top: 0; padding-top: 0; border-top: none; }
+/* 편집 모드: #태그 줄과 @인물 줄 */
+.edit-row { width: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
+.edit-row + .edit-row { margin-top: 6px; padding-top: 6px; border-top: 1px dashed #363f4d; }
 .theme-footer.edit-divider {
   border-top: 1px dashed #363f4d;
   background: rgba(0, 0, 0, 0.14);
@@ -492,6 +507,15 @@ header p { margin: 0; color: var(--text-dim); font-size: 14px; }
   --c: var(--tag-color, var(--tag-extra));
   background: color-mix(in srgb, var(--c) 12%, transparent);
   border: 1px solid color-mix(in srgb, var(--c) 45%, transparent);
+  color: var(--c);
+  font-weight: 600;
+}
+
+/* @인물 배지: #태그보다 조금 진한 바탕 */
+.tag.sub-person {
+  --c: var(--tag-color, var(--tag-extra));
+  background: color-mix(in srgb, var(--c) 22%, transparent);
+  border: 1px solid color-mix(in srgb, var(--c) 55%, transparent);
   color: var(--c);
   font-weight: 600;
 }

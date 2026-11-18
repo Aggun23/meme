@@ -36,11 +36,11 @@
   <div id="editBanner" class="edit-banner">
     <div class="edit-banner-top">
       <div class="edit-banner-info">
-        <strong>태그 편집 &amp; 새 짤 등록 모드</strong> — 박스 위쪽은 <b>+분류</b>, 박스 밑 공간은 <b>#태그</b>로 분리되어 표시됩니다.<br>
+        <strong>태그 편집 &amp; 새 짤 등록 모드</strong> — 박스 위쪽은 <b>+분류</b>, 박스 밑 공간은 <b>#태그</b>와 <b>@인물</b>로 분리되어 표시됩니다.<br>
         ⭐ 즐겨찾기(★)와 태그를 수정한 뒤 <b>pads.js 다운로드</b>를 눌러 덮어쓰면 <b>모든 기기·브라우저에서 즐겨찾기가 똑같이 동기화</b>됩니다!
       </div>
       <div class="edit-actions">
-        <input id="newTagInput" class="new-tag-input" type="text" placeholder="새 #태그 입력 (예: 이리)">
+        <input id="newTagInput" class="new-tag-input" type="text" placeholder="새 #태그 / @인물 입력">
         <button id="addTagBtn" class="btn-action" type="button">+ 추가</button>
         <button id="copyPadsBtn" class="btn-action" type="button">📋 코드 복사</button>
         <button id="downloadPadsBtn" class="btn-action primary" type="button">💾 pads.js 다운로드</button>
@@ -67,6 +67,7 @@
     </div>
     <div class="chips-row" id="typeChips" data-filter="type"></div>
     <div class="chips-row" id="themeChips" data-filter="theme"></div>
+    <div class="chips-row" id="personChips" data-filter="person"></div>
   </div>
 
   <div class="grid" id="grid"></div>
