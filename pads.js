@@ -360,7 +360,7 @@ var pads = [
   { image: 'images/활부2.jpg', label: '활 부1', cat: 'img', tags: ['짤', '만화'] },
   { image: 'images/활부3.jpg', label: '활 부2', cat: 'img', tags: ['짤', '만화'] },
   { image: 'images/황홀!.jpg', label: '황홀!', cat: 'img', tags: ['짤'] },
-  { image: 'images/회색내복.gif', label: '회색내복', cat: 'gif', tags: ['짤'] },
+  { image: 'images/회색내복 바즈.gif', label: '회색내복 바즈', cat: 'gif', tags: ['짤'] },
   { image: 'images/흠맹밍.webp', label: '흠맹밍', cat: 'img', tags: ['이모티콘'] },
   { image: 'images/흡족.jpg', label: '흡족', cat: 'img', tags: ['MEME'] },
   { image: 'images/히틀러.jpg', label: '히틀러', cat: 'img', tags: ['MEME', '정치'] },
