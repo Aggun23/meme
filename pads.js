@@ -68,7 +68,7 @@ var pads = [
   // [ㄷ]
   { image: 'images/다 아는 사람들이구만.jpg', label: '다 아는 사람들이구만', cat: 'img', tags: ['짤', '정치'] },
   { image: 'images/대문자 I.jpg', label: '대문자 I', cat: 'img', tags: ['짤', 'MEME'] },
-  { image: 'images/대상혁 장미.jpg', label: '대상혁 장미', cat: 'img', tags: ['짤'] },
+  { image: 'images/페장미.jpg', label: '페장미', cat: 'img', tags: ['짤'] },
   { image: 'images/대학생학대.jpg', label: '대학생학대', cat: 'img', tags: ['MEME'] },
   { image: 'images/대흉.jpg', label: '대흉', cat: 'img', tags: ['MEME'] },
   { video: 'images/댄싱히틀러.mp4', label: '댄싱히틀러', cat: 'video', tags: ['MEME', '정치'] },
