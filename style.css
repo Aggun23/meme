@@ -13,6 +13,7 @@
   --img: #ff5470;
   --gif: #c6ff3d;
   --video: #3fa7ff;
+  --emoji: #ffb142;
 
   --fav: #fed330;          /* 즐겨찾기 */
   --edit-accent: #ff9f43;  /* 편집 모드 */
@@ -22,7 +23,6 @@
 /* ── 태그 색 ─────────────────────────────────────────────
    필터 칩·배지·신호등 도트·편집 버튼이 모두 --tag-color 하나를 같이 쓴다.
    새 태그에 색을 주려면 여기에 한 줄만 추가하면 된다. (없으면 --tag-extra) */
-[data-t="이모티콘"] { --tag-color: #ffb142; }
 [data-t="짤"]       { --tag-color: #2bcbba; }
 [data-t="MEME"]     { --tag-color: #b36bff; }
 [data-t="정치"]     { --tag-color: #fed330; }
@@ -37,6 +37,7 @@
 #catChips [data-value="img"]   { --tag-color: var(--img); }
 #catChips [data-value="gif"]   { --tag-color: var(--gif); }
 #catChips [data-value="video"] { --tag-color: var(--video); }
+#catChips [data-value="emoji"] { --tag-color: var(--emoji); }
 
 /* ── 기본 ─────────────────────────────────────────────── */
 * { box-sizing: border-box; }
@@ -475,6 +476,7 @@ header p { margin: 0; color: var(--text-dim); font-size: 14px; }
 .tag.img { background: var(--img); }
 .tag.gif { background: var(--gif); }
 .tag.video { background: var(--video); }
+.tag.emoji { background: var(--emoji); }
 
 /* +분류 배지: 테두리만 */
 .tag.sub-type {
@@ -508,6 +510,7 @@ header p { margin: 0; color: var(--text-dim); font-size: 14px; }
   transition: all .12s;
 }
 .edit-tag-btn:hover { opacity: 0.85; }
+.edit-format-btn { --tag-color: var(--emoji); }
 .edit-tag-btn.on {
   --c: var(--tag-color, var(--tag-extra));
   opacity: 1;
