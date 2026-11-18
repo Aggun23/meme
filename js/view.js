@@ -22,6 +22,7 @@ function tagChipsHtml(rowLabel, tags, prefix) {
 function renderFilterChips() {
   $('typeChips').innerHTML = tagChipsHtml('분류', state.typeList, '+');
   $('themeChips').innerHTML = tagChipsHtml('태그', state.themeList, '#');
+  $('personChips').innerHTML = tagChipsHtml('인물', state.personList, '@');
   markActiveChips();
 }
 
@@ -108,15 +109,21 @@ function enableThumbDrag(container, thumb, p) {
 // ── 짤 카드 ────────────────────────────────────────────
 // 카드 아래쪽.
 //   평소     : +분류 배지가 보이는 버튼, 누르면 #태그 서랍이 펼쳐진다
-//   편집 모드 : 모든 분류·태그가 버튼으로 나오고 눌러서 켜고 끈다
+//   편집 모드 : 이모티콘 포맷과 모든 분류·태그가 버튼으로 나오고 눌러서 켜고 끈다
 function padMetaHtml(p) {
   if (state.editMode) {
     const buttons = (tags, prefix) => tags.map(t =>
       `<button type="button" class="edit-tag-btn ${p.tags.includes(t) ? 'on' : ''}" data-t="${escapeHtml(t)}">${prefix}${escapeHtml(t)}</button>`).join('');
     return `
       <div class="tag-drawer">
-        <div class="type-group">${buttons(state.typeList, '+')}</div>
-        <div class="theme-footer edit-divider">${buttons(state.themeList, '#')}</div>
+        <div class="type-group">
+          <button type="button" class="edit-tag-btn edit-format-btn ${padFormat(p) === 'emoji' ? 'on' : ''}" title="이모티콘 포맷으로 옮기기 / 되돌리기">이모티콘</button>
+          ${buttons(state.typeList, '+')}
+        </div>
+        <div class="theme-footer edit-divider">
+          <div class="edit-row">${buttons(state.themeList, '#')}</div>
+          <div class="edit-row">${buttons(state.personList, '@')}</div>
+        </div>
       </div>`;
   }
 
@@ -124,15 +131,16 @@ function padMetaHtml(p) {
     `<span class="tag ${kind}" data-t="${escapeHtml(t)}">${prefix}${escapeHtml(t)}</span>`).join('');
   const types = p.tags.filter(t => state.typeList.includes(t));
   const themes = p.tags.filter(t => state.themeList.includes(t));
+  const persons = p.tags.filter(t => state.personList.includes(t));
   return `
     <button type="button" class="drawer-toggle-btn" title="클릭해서 상세 태그 펼치기/접기">
       ${types.length ? badges(types, 'sub-type', '+') : '<span class="meta-empty">분류 없음</span>'}
       <span class="arrow">▾</span>
     </button>
     <div class="tag-drawer">
-      ${themes.length
-        ? `<div class="theme-footer flat">${badges(themes, 'sub-theme', '#')}</div>`
-        : '<span class="meta-empty">추가 #태그 없음</span>'}
+      ${themes.length || persons.length
+        ? `<div class="theme-footer flat">${badges(themes, 'sub-theme', '#')}${badges(persons, 'sub-person', '@')}</div>`
+        : '<span class="meta-empty">추가 #태그·@인물 없음</span>'}
     </div>`;
 }
 
@@ -142,9 +150,12 @@ function padCardHtml(p) {
   const thumb = p.video
     ? `<video class="pad-img" src="${src}" muted loop playsinline></video>`
     : `<img class="pad-img" src="${src}" alt="${label}">`;
-  // 신호등 도트: 이 짤에 달린 #태그마다 하나씩
-  const dots = p.tags.filter(t => state.themeList.includes(t))
-    .map(t => `<span class="t-dot" data-t="${escapeHtml(t)}"></span>`).join('');
+  // 신호등 도트: #태그는 사진 오른쪽, @인물은 사진 왼쪽에 하나씩
+  const dotsHtml = (list, side, prefix) => {
+    const dots = p.tags.filter(t => list.includes(t))
+      .map(t => `<span class="t-dot" data-t="${escapeHtml(t)}" data-name="${prefix}${escapeHtml(t)}"></span>`).join('');
+    return dots ? `<div class="traffic-dots ${side}">${dots}</div>` : '';
+  };
   const metaState = state.editMode ? ' edit-open' : (openDrawers.has(padKey(p)) ? ' open' : '');
 
   return `
@@ -154,7 +165,8 @@ function padCardHtml(p) {
       <div class="pad-format-row"><span class="tag ${format}">${FORMAT_NAME[format]}</span></div>
       <div class="thumb-area">
         ${thumb}
-        ${dots ? `<div class="traffic-dots">${dots}</div>` : ''}
+        ${dotsHtml(state.personList, 'left', '@')}
+        ${dotsHtml(state.themeList, 'right', '#')}
       </div>
       <span class="label">${label}</span>
     </div>
@@ -178,6 +190,10 @@ function createPadCard(p, isFirstMatch) {
     const hit = selector => e.target.closest(selector);
     if (hit('.zoom-btn')) {
       previewPopup.classList.contains('show') ? hidePreview() : showPreview(p, card);
+    } else if (hit('.edit-format-btn')) {
+      const isEmoji = toggleEmoji(p);
+      showToast(isEmoji ? `'${p.label}' → 이모티콘` : `'${p.label}' → ${FORMAT_NAME[padFormat(p)]}`);
+      render();   // 포맷이 바뀌면 들어갈 묶음도 바뀌니 다시 그린다
     } else if (hit('.edit-tag-btn')) {
       onTagButtonClick(p, hit('.edit-tag-btn').dataset.t);
     } else if (hit('.fav-btn')) {
@@ -222,8 +238,8 @@ function onFavClick(p) {
 // 편집 모드에서 카드의 태그 버튼을 눌렀을 때
 function onTagButtonClick(p, tag) {
   const turnedOn = toggleTag(p, tag);
-  const { type, theme } = state.filters;
-  const stillShown = (type === 'all' || p.tags.includes(type)) && (theme === 'all' || p.tags.includes(theme));
+  const stillShown = ['type', 'theme', 'person']
+    .every(key => state.filters[key] === 'all' || p.tags.includes(state.filters[key]));
   if (!stillShown) {
     render();   // 지금 고른 필터에서 빠지게 됐으니 목록에서 치운다
     return;

@@ -14,22 +14,25 @@ editModeBtn.addEventListener('click', () => {
   render();
 });
 
-// ── 새 #태그 추가 ──────────────────────────────────────
+// ── 새 #태그 / @인물 추가 ──────────────────────────────
+// '@'로 시작하면 @인물, 아니면 #태그로 추가한다
 function addNewTag() {
-  const name = newTagInput.value.trim().replace(/^[+#@]+/, '');
+  const raw = newTagInput.value.trim();
+  const isPerson = raw.startsWith('@');
+  const name = raw.replace(/^[+#@]+/, '').trim();
   if (!name) {
-    showToast('추가할 #태그 이름을 입력해 주세요.');
+    showToast('추가할 #태그 또는 @인물 이름을 입력해 주세요.');
     return;
   }
-  if (state.typeList.includes(name) || state.themeList.includes(name)) {
+  if (isKnownTag(name)) {
     showToast('이미 있는 태그입니다.');
     return;
   }
-  state.themeList.push(name);
+  (isPerson ? state.personList : state.themeList).push(name);
   newTagInput.value = '';
   renderFilterChips();
   render();
-  showToast(`'#${name}' 태그가 추가되었습니다!`);
+  showToast(isPerson ? `'@${name}' 인물이 추가되었습니다!` : `'#${name}' 태그가 추가되었습니다!`);
 }
 
 $('addTagBtn').addEventListener('click', addNewTag);
@@ -117,6 +120,7 @@ function buildPadsJs() {
     `// 짤패드 데이터. 편집 모드의 'pads.js 다운로드'로 만든 파일이다.`,
     `var typeList = ${list(state.typeList)}; // +분류`,
     `var extraTagList = ${list(state.themeList)}; // #태그`,
+    `var personList = ${list(state.personList)}; // @인물`,
     '',
     'var pads = [',
     ...lines,

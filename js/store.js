@@ -4,22 +4,30 @@
 const FAV_STORAGE_KEY = 'jjalpad_favorites_v1';
 const RECENT_STORAGE_KEY = 'jjalpad_recent_v1';
 const RECENT_LIMIT = 8;
-const FORMAT_NAME = { img: '이미지', gif: 'GIF', video: '영상' };
+const FORMAT_NAME = { img: '이미지', gif: 'GIF', video: '영상', emoji: '이모티콘' };
 
 const state = {
   pads: [],        // 짤 목록 (pads.js의 pads)
   typeList: [],    // +분류 (pads.js의 typeList)
   themeList: [],   // #태그 (pads.js의 extraTagList + 짤에 달려 있는 그 밖의 태그)
+  personList: [],  // @인물 (pads.js의 personList)
   favKeys: [],     // 이 브라우저에 저장된 즐겨찾기 (짤의 파일 경로)
   recent: [],      // 최근 사용한 짤, 최신순
-  filters: { cat: 'all', type: 'all', theme: 'all' },   // 필터 칩에서 고른 값
+  filters: { cat: 'all', type: 'all', theme: 'all', person: 'all' },   // 필터 칩에서 고른 값
   editMode: false,
 };
 
 // ── 짤 하나에 대한 정보 ────────────────────────────────
 const padKey = p => p.video || p.image || p.label;         // 짤을 구분하는 값 (파일 경로)
 const padSrc = p => p._previewUrl || p.video || p.image;   // 화면에 보여줄 주소 (방금 등록한 파일은 임시 주소)
-const padFormat = p => p.cat || (p.video ? 'video' : /\.gif$/i.test(p.image || '') ? 'gif' : 'img');
+const fileFormat = p => p.video ? 'video' : /\.gif($|\?)/i.test(p.image || '') ? 'gif' : 'img';   // 실제 파일 종류 (복사 방식이 이것으로 정해진다)
+const padFormat = p => p.cat || fileFormat(p);   // 화면의 포맷 (이모티콘은 파일 종류와 상관없이 cat: 'emoji')
+
+// 이모티콘 포맷을 켜거나 끈다. 끄면 파일 종류(이미지·GIF·영상)로 돌아간다
+function toggleEmoji(p) {
+  p.cat = padFormat(p) === 'emoji' ? fileFormat(p) : 'emoji';
+  return p.cat === 'emoji';
+}
 const findPad = keyOrLabel => state.pads.find(p => padKey(p) === keyOrLabel || p.label === keyOrLabel);
 
 // ── 브라우저 저장소 ────────────────────────────────────
@@ -37,15 +45,17 @@ function storeList(storageKey, list) {
 }
 
 // ── 태그 ───────────────────────────────────────────────
-// +분류 먼저, 그다음 #태그 순서로 (목록에 적힌 순서대로) 정렬한다
+// +분류 → #태그 → @인물 순서로 (목록에 적힌 순서대로) 정렬한다
 function sortTags(tags) {
-  const order = [...state.typeList, ...state.themeList];
+  const order = [...state.typeList, ...state.themeList, ...state.personList];
   return [...new Set(tags)].sort((a, b) => {
     const ia = order.indexOf(a), ib = order.indexOf(b);
     if (ia === -1 && ib === -1) return a.localeCompare(b, 'ko');
     return ia === -1 ? 1 : (ib === -1 ? -1 : ia - ib);
   });
 }
+
+const isKnownTag = t => state.typeList.includes(t) || state.themeList.includes(t) || state.personList.includes(t);
 
 // 짤의 태그를 켜거나 끈다. 켜졌으면 true
 function toggleTag(p, tag) {
@@ -119,11 +129,12 @@ function matchesFormat(p, cat) {
   return cat === 'fav' ? isFav(p) : padFormat(p) === cat;
 }
 
-// 필터 칩 세 줄(포맷·분류·태그)과 검색어를 모두 통과하면 true
+// 필터 칩 네 줄(포맷·분류·태그·인물)과 검색어를 모두 통과하면 true
 function matchesFilters(p, filters, query) {
   return matchesFormat(p, filters.cat) &&
     (filters.type === 'all' || p.tags.includes(filters.type)) &&
     (filters.theme === 'all' || p.tags.includes(filters.theme)) &&
+    (filters.person === 'all' || p.tags.includes(filters.person)) &&
     matchesSearch(p, query);
 }
 
@@ -132,13 +143,14 @@ function matchesFilters(p, filters, query) {
 function loadPadData() {
   state.pads = window.pads;
   state.typeList = [...(window.typeList || [])];
-  state.themeList = [...new Set(window.extraTagList || [])];
+  state.personList = [...new Set(window.personList || [])];
+  state.themeList = [...new Set(window.extraTagList || [])].filter(t => !state.personList.includes(t));
 
   state.pads.forEach(p => {
     p.tags = p.tags || [];
     // 목록에 없는 태그가 짤에 달려 있으면 #태그로 취급한다
     p.tags.forEach(t => {
-      if (!state.typeList.includes(t) && !state.themeList.includes(t)) state.themeList.push(t);
+      if (!isKnownTag(t)) state.themeList.push(t);
     });
     p.tags = sortTags(p.tags);
   });
